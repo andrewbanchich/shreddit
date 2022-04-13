@@ -3,6 +3,8 @@ name = "shreddit"
 version = "0.1.0-alpha.0"
 edition = "2021"
 authors = ["Andrew Banchich <andrewbanchich@gmail.com>"]
+description = "Overwrite and delete your Reddit account history."
+license = "MIT"
 
 [dependencies]
 clap = { version = "3.1.8", features = ["derive", "env"] }
