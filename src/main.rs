@@ -54,7 +54,10 @@ async fn main() {
 
     let comms = comments().await;
 
-    info!("Deleting {} comments...", comms.len());
+    let comment_count = comms.len();
+    let possible_s = if comment_count == 1 { "" } else { "s" };
+
+    info!("Deleting {} comment{}...", comment_count, possible_s);
 
     for comment in comms {
         CommentObj::edit(&res.access_token, &format!("t1_{}", comment.data.id)).await;

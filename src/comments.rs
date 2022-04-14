@@ -56,7 +56,14 @@ impl CommentObj {
         &self.data.body[..end]
     }
 
+    #[instrument(level = "info", skip(access_token))]
     pub async fn edit(access_token: &str, thing_id: &str) {
+        info!("Replacing comment with: {}", LOREM_IPSUM);
+
+        if ARGS.dry_run {
+            return;
+        }
+
         let mut headers = HeaderMap::new();
         headers.insert(
             "Authorization",
@@ -69,8 +76,6 @@ impl CommentObj {
         params.insert("thing_id", thing_id);
         params.insert("text", LOREM_IPSUM);
 
-        info!("Editing comment.");
-
         REQWEST
             .post("https://oauth.reddit.com/api/editusertext?raw_json=1")
             .headers(headers)
@@ -80,7 +85,7 @@ impl CommentObj {
             .unwrap();
     }
 
-    #[instrument(level = "info")]
+    #[instrument(level = "info", skip(self, access_token))]
     pub async fn delete(&self, thing_id: &str, access_token: &str) {
         info!("Deleting comment: {}", self.preview());
 
