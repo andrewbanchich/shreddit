@@ -8,7 +8,7 @@ use tracing::info;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
 mod comments;
-use comments::{comments, CommentObj};
+use comments::{list_comments, CommentObj};
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -52,7 +52,7 @@ async fn main() {
 
     let res = access_token().await;
 
-    let comms = comments().await;
+    let comms = list_comments().await;
 
     let comment_count = comms.len();
     let possible_s = if comment_count == 1 { "" } else { "s" };

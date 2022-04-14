@@ -30,8 +30,11 @@ pub struct Comment {
     pub link_title: String,
 }
 
-pub async fn comments() -> Vec<CommentObj> {
+#[instrument(level = "info")]
+pub async fn list_comments() -> Vec<CommentObj> {
     let username = &ARGS.username;
+
+    info!("Fetching comments...");
 
     let res: CommentRes = REQWEST
         .get(&format!("https://reddit.com/user/{username}/comments.json"))
