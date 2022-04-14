@@ -4,9 +4,13 @@ use reqwest::{header::HeaderMap, Client};
 use serde::Deserialize;
 use serde_json::Value;
 use std::collections::HashMap;
+use tracing::info;
+use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
 mod comments;
 use comments::comments;
+
+use crate::comments::Comment;
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -25,6 +29,17 @@ static REQWEST: Lazy<Client> = Lazy::new(|| Client::new());
 
 #[tokio::main]
 async fn main() {
+    let filter = EnvFilter::try_from_default_env()
+        .or_else(|_| EnvFilter::try_new("info"))
+        .unwrap();
+
+    let format = fmt::layer().with_target(false);
+
+    tracing_subscriber::registry()
+        .with(filter)
+        .with(format)
+        .init();
+
     let Args {
         username,
         password,
@@ -43,27 +58,24 @@ async fn main() {
             comment.data.body.len()
         };
 
-        println!(
+        Comment::edit(&res.access_token, &format!("t1_{}", comment.data.id)).await;
+
+        info!(
             "Deleting comment ({}): {}",
             comment.data.id,
             &comment.data.body[0..end]
         );
-        delete_comment(&format!("t1_{}", comment.data.id), &res.access_token).await;
+
+        Comment::delete(&format!("t1_{}", comment.data.id), &res.access_token).await;
     }
-
-    let comments = comments(&username).await;
-
-    dbg!(comments);
-    // me(&res.access_token).await;
-    // edit_comment(&res.access_token).await;
 }
 
 #[derive(Debug, Deserialize)]
 struct AccessTokenResponse {
     access_token: String,
-    expires_in: u16,
-    scope: String,
-    token_type: String,
+    // expires_in: String,
+    // scope: String,
+    // token_type: String,
 }
 
 async fn access_token(
@@ -89,6 +101,7 @@ async fn access_token(
         .unwrap()
 }
 
+#[allow(unused)]
 async fn me(access_token: &str) {
     let mut headers = HeaderMap::new();
     headers.insert(
@@ -111,55 +124,4 @@ async fn me(access_token: &str) {
     dbg!(res);
 }
 
-async fn edit_comment(access_token: &str, thing_id: &str) {
-    let mut headers = HeaderMap::new();
-    headers.insert(
-        "Authorization",
-        format!("Bearer {access_token}").parse().unwrap(),
-    );
-
-    headers.insert("User-Agent", format!("ShredditClient/0.1").parse().unwrap());
-
-    let mut params = HashMap::new();
-    params.insert("thing_id", thing_id);
-    params.insert("text", "foo");
-
-    let res: Value = REQWEST
-        .post("https://oauth.reddit.com/api/editusertext?raw_json=1")
-        .headers(headers)
-        .form(&params)
-        .send()
-        .await
-        .unwrap()
-        .json()
-        .await
-        .unwrap();
-
-    println!("{:#}", res);
-}
-
-async fn delete_comment(thing_id: &str, access_token: &str) {
-    let mut headers = HeaderMap::new();
-    headers.insert(
-        "Authorization",
-        format!("Bearer {access_token}").parse().unwrap(),
-    );
-
-    headers.insert("User-Agent", format!("ShredditClient/0.1").parse().unwrap());
-
-    let mut params = HashMap::new();
-    params.insert("id", thing_id);
-
-    let res: Value = REQWEST
-        .post("https://oauth.reddit.com/api/del")
-        .headers(headers)
-        .form(&params)
-        .send()
-        .await
-        .unwrap()
-        .json()
-        .await
-        .unwrap();
-
-    println!("{:#}", res);
-}
+static LOREM_IPSUM: &str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
