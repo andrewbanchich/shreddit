@@ -1,10 +1,11 @@
 [package]
 name = "shreddit"
-version = "0.1.0-alpha.0"
+version = "0.1.0-alpha.1"
 edition = "2021"
 authors = ["Andrew Banchich <andrewbanchich@gmail.com>"]
 description = "Overwrite and delete your Reddit account history."
 license = "MIT"
+repository = "https://github.com/andrewbanchich/shreddit"
 
 [dependencies]
 clap = { version = "3.1.8", features = ["derive", "env"] }
