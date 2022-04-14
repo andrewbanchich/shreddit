@@ -43,7 +43,17 @@ pub async fn comments(username: &str) -> Vec<CommentObj> {
     res.data.children
 }
 
-impl Comment {
+impl CommentObj {
+    pub fn preview(&self) -> &str {
+        let end = if self.data.body.len() > 20 {
+            20
+        } else {
+            self.data.body.len()
+        };
+
+        &self.data.body[..end]
+    }
+
     pub async fn edit(access_token: &str, thing_id: &str) {
         let mut headers = HeaderMap::new();
         headers.insert(
@@ -69,7 +79,7 @@ impl Comment {
     }
 
     #[instrument(level = "info")]
-    pub async fn delete(thing_id: &str, access_token: &str) {
+    pub async fn delete(&self, thing_id: &str, access_token: &str) {
         let mut headers = HeaderMap::new();
         headers.insert(
             "Authorization",
@@ -81,7 +91,7 @@ impl Comment {
         let mut params = HashMap::new();
         params.insert("id", thing_id);
 
-        info!("Deleting comment.");
+        info!("Deleting comment: {}", self.preview());
 
         REQWEST
             .post("https://oauth.reddit.com/api/del")

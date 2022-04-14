@@ -8,9 +8,7 @@ use tracing::info;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
 mod comments;
-use comments::comments;
-
-use crate::comments::Comment;
+use comments::{comments, CommentObj};
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -29,17 +27,10 @@ static REQWEST: Lazy<Client> = Lazy::new(|| Client::new());
 
 #[tokio::main]
 async fn main() {
-    let filter = EnvFilter::try_from_default_env()
-        .or_else(|_| EnvFilter::try_new("info"))
-        .unwrap();
+    // Load shreddit.env
+    dotenv::from_filename("shreddit.env").ok();
 
-    let format = fmt::layer().with_target(false);
-
-    tracing_subscriber::registry()
-        .with(filter)
-        .with(format)
-        .init();
-
+    // Parse CLI
     let Args {
         username,
         password,
@@ -47,26 +38,31 @@ async fn main() {
         client_secret,
     } = Args::parse();
 
+    // Initialize tracing
+    {
+        let filter = EnvFilter::try_from_default_env()
+            .or_else(|_| EnvFilter::try_new("info"))
+            .unwrap();
+
+        let format = fmt::layer().with_target(false);
+
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(format)
+            .init();
+    }
+
     let res = access_token(&username, &password, &client_id, &client_secret).await;
 
     let comms = comments(&username).await;
 
+    info!("Deleting {} comments...", comms.len());
+
     for comment in comms {
-        let end = if comment.data.body.len() > 20 {
-            20
-        } else {
-            comment.data.body.len()
-        };
-
-        Comment::edit(&res.access_token, &format!("t1_{}", comment.data.id)).await;
-
-        info!(
-            "Deleting comment ({}): {}",
-            comment.data.id,
-            &comment.data.body[0..end]
-        );
-
-        Comment::delete(&format!("t1_{}", comment.data.id), &res.access_token).await;
+        CommentObj::edit(&res.access_token, &format!("t1_{}", comment.data.id)).await;
+        comment
+            .delete(&format!("t1_{}", comment.data.id), &res.access_token)
+            .await;
     }
 }
 
