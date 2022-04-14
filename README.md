@@ -7,7 +7,19 @@
 ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═════╝ ╚═════╝ ╚═╝   ╚═╝   
 ```
 
-Because the [Shreddit](https://github.com/x89/Shreddit) project was abandoned in 2017,
+`shreddit` is a tool to delete Reddit comments and posts.
+
+Deactivating a Reddit account will not delete comments or submissions - it will only disassociate your account from them.
+
+Shreddit overwrites your comments with random text before deleting them to ensure that the originals are (probably) not preserved.
+
+If you don't want your post history to follow you around forever, you can use `shreddit` on a cron job.
+
+If you're deactivating your account, you can run `shreddit` first to ensure your posts are deleted.
+
+# About
+
+Because the [original Shreddit](https://github.com/x89/Shreddit) project was abandoned in 2017,
 I decided to rewrite it in Rust.
 
 This brings several benefits:
