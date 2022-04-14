@@ -17,3 +17,13 @@ This brings several benefits:
 - Instead of having `shreddit.yml` and `praw.ini` config files, all configuration is done through CLI commands
 with environment variables as default fallbacks.
 - It isn't Python.
+
+# Installation
+
+## Manual
+
+Download the binary from the [GitHub Releases](https://github.com/andrewbanchich/shreddit/releases) page.
+
+## Cargo
+
+`cargo install shreddit`
