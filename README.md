@@ -13,10 +13,9 @@ I decided to rewrite it in Rust.
 This brings several benefits:
 
 - You don't need to have Python or anything else installed.
-- You don't need to worry about what version of Python is installed.
-- Instead of having `shreddit.yml` and `praw.ini` config files, all configuration is done through CLI commands
+- Instead of having `shreddit.yml` and `praw.ini` config files, all configuration can be done through CLI commands
 with environment variables as default fallbacks.
-- It isn't Python.
+- I found that [Python Shreddit](https://github.com/x89/Shreddit) didn't comments which mods removed. This does.
 
 # Installation
 
@@ -53,3 +52,26 @@ or by setting them as environment variables (e.g. `SHREDDIT_CLIENT_SECRET`) and 
 
 On startup, `shreddit` looks for a `shreddit.env` file in the current directory and sets any variables declared there.
 However, this is purely optional.
+
+## Dry run
+
+You can use `--dry-run` or `SHREDDIT_DRY_RUN=true` to see what it would do without it actually doing anything.
+
+## Other features
+
+These are the other features [Python Shreddit had](https://github.com/x89/Shreddit/blob/master/shreddit.yml.example).
+
+I'll be adding these as I go along. PRs are welcome!
+
+[x] - Dry run - preview what would happen with given configuration.
+[] - Hours of comments you want to preserve.
+[] - Max score - preserve comments with a score higher than this.
+[] - Comment sorting
+[] - Clear vote - Remove your votes before deleting.
+[] - Item - configure what kinds of items to delete (submissions, comments, etc.)
+[] - Subreddit whitelist - anything in given subreddits will not be deleted.
+[] - Whitelist IDs - preserve specific posts by listing their IDs.
+[] - Preserve distinguished - Don't deleted distinguished comments.
+[] - Preserve gilded - Don't deleted gilded comments.
+
+Other feature ideas are welcome.

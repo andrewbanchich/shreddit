@@ -21,9 +21,12 @@ struct Args {
     client_id: String,
     #[clap(long, env = "SHREDDIT_CLIENT_SECRET")]
     client_secret: String,
+    #[clap(long, env = "SHREDDIT_DRY_RUN")]
+    dry_run: bool,
 }
 
 static REQWEST: Lazy<Client> = Lazy::new(|| Client::new());
+static ARGS: Lazy<Args> = Lazy::new(|| Args::parse());
 
 #[tokio::main]
 async fn main() {
@@ -31,12 +34,7 @@ async fn main() {
     dotenv::from_filename("shreddit.env").ok();
 
     // Parse CLI
-    let Args {
-        username,
-        password,
-        client_id,
-        client_secret,
-    } = Args::parse();
+    Lazy::force(&ARGS);
 
     // Initialize tracing
     {
@@ -52,9 +50,9 @@ async fn main() {
             .init();
     }
 
-    let res = access_token(&username, &password, &client_id, &client_secret).await;
+    let res = access_token().await;
 
-    let comms = comments(&username).await;
+    let comms = comments().await;
 
     info!("Deleting {} comments...", comms.len());
 
@@ -74,21 +72,16 @@ struct AccessTokenResponse {
     // token_type: String,
 }
 
-async fn access_token(
-    username: &str,
-    password: &str,
-    client_id: &str,
-    client_secret: &str,
-) -> AccessTokenResponse {
+async fn access_token() -> AccessTokenResponse {
     let mut params = HashMap::new();
     params.insert("grant_type", "password");
-    params.insert("username", username);
-    params.insert("password", password);
+    params.insert("username", &ARGS.username);
+    params.insert("password", &ARGS.password);
 
     REQWEST
         .post("https://www.reddit.com/api/v1/access_token")
         .form(&params)
-        .basic_auth(client_id, Some(client_secret))
+        .basic_auth(&ARGS.client_id, Some(&ARGS.client_secret))
         .send()
         .await
         .unwrap()

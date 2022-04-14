@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{LOREM_IPSUM, REQWEST};
+use crate::{ARGS, LOREM_IPSUM, REQWEST};
 use reqwest::header::HeaderMap;
 use serde::Deserialize;
 use tracing::{info, instrument};
@@ -30,7 +30,9 @@ pub struct Comment {
     pub link_title: String,
 }
 
-pub async fn comments(username: &str) -> Vec<CommentObj> {
+pub async fn comments() -> Vec<CommentObj> {
+    let username = &ARGS.username;
+
     let res: CommentRes = REQWEST
         .get(&format!("https://reddit.com/user/{username}/comments.json"))
         .send()
@@ -80,6 +82,12 @@ impl CommentObj {
 
     #[instrument(level = "info")]
     pub async fn delete(&self, thing_id: &str, access_token: &str) {
+        info!("Deleting comment: {}", self.preview());
+
+        if ARGS.dry_run {
+            return;
+        }
+
         let mut headers = HeaderMap::new();
         headers.insert(
             "Authorization",
@@ -90,8 +98,6 @@ impl CommentObj {
 
         let mut params = HashMap::new();
         params.insert("id", thing_id);
-
-        info!("Deleting comment: {}", self.preview());
 
         REQWEST
             .post("https://oauth.reddit.com/api/del")
