@@ -7,6 +7,8 @@
 
 `shreddit` is a tool to delete Reddit comments and posts.
 
+> Contributions are welcome!
+
 Deactivating a Reddit account will not delete comments or submissions - it will only disassociate your account from them.
 
 Shreddit overwrites your comments with random text before deleting them to ensure that the originals are (probably) not preserved.
