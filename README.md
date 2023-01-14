@@ -35,7 +35,7 @@ Download the binary from the [GitHub Releases](https://github.com/andrewbanchich
 
 ## Cargo
 
-`cargo install shreddit`
+`cargo install --version 0.1.0-alpha.2 shreddit` (change `0.1.0-alpha.2` to the latest version)
 
 # How to use
 
