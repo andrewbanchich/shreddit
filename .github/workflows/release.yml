@@ -4,18 +4,28 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pull-requests: read
+      
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+
       - uses: actions-rs/cargo@v1
         with:
           command: build
           args: --release --all-features
-          
-      - run: pwd
- 
-      - run: gh release upload --clobber v0.1.0 ./target/release/shreddit
+
+      - name: create_release
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: gh release upload --clobber ${{ steps.create_release.outputs.tag }}  ./target/release/shreddit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
