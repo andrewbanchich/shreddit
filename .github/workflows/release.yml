@@ -1,9 +1,24 @@
 name: release
 on: [ push ]
 jobs:
+
+  draft-release:
+    name: release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.create_release.outputs.tag_name }}
+    
+    steps:
+    
+      - id: create_release
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build:
     name: build
     runs-on: ubuntu-latest
+    needs: [draft-release]
     
     strategy:
       matrix:
@@ -26,19 +41,13 @@ jobs:
           command: build
           use-cross: true
           args: --release --all-features --target ${{ matrix.target }}
+          
+      - uses: actions/upload-artifact@v3
+        with:
+          name: shreddit-${{ matrix.target }}
+          path: ./target/release/shreddit
 
-  release:
-    name: release
-    runs-on: ubuntu-latest
-    needs: [build]
-    
-    steps:
-    
-      - id: create_release
-        uses: release-drafter/release-drafter@v5
+      - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/release/shreddit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: gh release upload --clobber ${{ steps.create_release.outputs.tag_name }}  ./target/release/shreddit
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
