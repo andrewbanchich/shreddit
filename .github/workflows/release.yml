@@ -23,6 +23,9 @@ jobs:
     strategy:
       matrix:
         target: [aarch64-unknown-linux-musl, x86_64-pc-windows-gnu]
+        include:
+         - target: x86_64-pc-windows-gnu
+           ext: .exe
     
     permissions:
       contents: write
@@ -42,14 +45,12 @@ jobs:
           use-cross: true
           args: --release --all-features --target ${{ matrix.target }}
           
-      - uses: actions/upload-artifact@v3
-        with:
-          name: shreddit-${{ matrix.target }}
-          path: |
-            ./target/release/shreddit
-            ./target/release/shreddit.exe
+#       - uses: actions/upload-artifact@v3
+#         with:
+#           name: shreddit-${{ matrix.target }}
+#           path: ./target/release/shreddit${{ matrix.ext }}
 
-      - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/release/shreddit
+      - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/release/shreddit${{ matrix.ext }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
