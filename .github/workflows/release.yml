@@ -5,11 +5,16 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     
+    strategy:
+      matrix:
+        target: [aarch64-unknown-linux-musl, x86_64-pc-windows-gnu]
+    
     permissions:
       contents: write
       pull-requests: read
       
     steps:
+    
       - uses: actions/checkout@v2
 
       - uses: actions-rs/toolchain@v1
@@ -19,8 +24,15 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --all-features
+          use-cross: true
+          args: --release --all-features --target ${{ matrix.target }}
 
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    
+    steps:
+    
       - id: create_release
         uses: release-drafter/release-drafter@v5
         env:
