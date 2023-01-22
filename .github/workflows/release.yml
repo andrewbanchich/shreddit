@@ -50,7 +50,7 @@ jobs:
 #           name: shreddit-${{ matrix.target }}
 #           path: ./target/release/shreddit${{ matrix.ext }}
 
-      - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/release/shreddit${{ matrix.ext }}
+      - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/${{ matrix.target }}/shreddit${{ matrix.ext }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
