@@ -21,7 +21,7 @@ jobs:
           command: build
           args: --release --all-features
 
-      - name: create_release
+      - id: create_release
         uses: release-drafter/release-drafter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
