@@ -45,7 +45,9 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: shreddit-${{ matrix.target }}
-          path: ./target/release/shreddit*
+          path: |
+            ./target/release/shreddit
+            ./target/release/shreddit.exe
 
       - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/release/shreddit
         env:
