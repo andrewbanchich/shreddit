@@ -26,6 +26,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: gh release upload --clobber ${{ steps.create_release.outputs.tag }}  ./target/release/shreddit
+      - run: gh release upload --clobber ${{ steps.create_release.outputs.tag_name }}  ./target/release/shreddit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
