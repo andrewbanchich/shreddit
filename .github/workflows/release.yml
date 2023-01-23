@@ -53,8 +53,10 @@ jobs:
           command: build
           use-cross: ${{ matrix.use-cross }}
           args: --release --all-features --target ${{ matrix.target }}
+          
+      - run: mv ./target/${{ matrix.target }}/release/shreddit${{ matrix.ext }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}-${{ matrix.ext }}
 
-      - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/${{ matrix.target }}/release/shreddit${{ matrix.ext }}#shreddit-${{ matrix.platform }}${{ matrix.ext }}
+      - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}-${{ matrix.ext }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
