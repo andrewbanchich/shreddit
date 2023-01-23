@@ -17,14 +17,20 @@ jobs:
 
   build:
     name: build
-    runs-on: ubuntu-latest
+    runs-on: ${{ matric.os }}
     needs: [draft-release]
     
     strategy:
       matrix:
-        target: [aarch64-unknown-linux-musl, x86_64-pc-windows-gnu]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
         include:
-         - target: x86_64-pc-windows-gnu
+         - os: ubuntu-latest
+           target: aarch64-unknown-linux-musl
+           use-cross: true
+         - os: macos-latest
+           target: x86_64-apple-darwin
+         - os: windows-latest
+           target: x86_64-pc-windows-gnu
            ext: .exe
     
     permissions:
@@ -42,13 +48,8 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          use-cross: true
+          use-cross: ${{ matrix.use-cross }}
           args: --release --all-features --target ${{ matrix.target }}
-          
-#       - uses: actions/upload-artifact@v3
-#         with:
-#           name: shreddit-${{ matrix.target }}
-#           path: ./target/release/shreddit${{ matrix.ext }}
 
       - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/${{ matrix.target }}/release/shreddit${{ matrix.ext }}
         env:
