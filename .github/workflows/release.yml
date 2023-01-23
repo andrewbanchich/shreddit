@@ -22,7 +22,7 @@ jobs:
     
     strategy:
       matrix:
-        os: [ linux, mac, windows ]
+        platform: [ linux, mac, windows ]
         include:
          - platform: linux
            os: ubuntu-latest
