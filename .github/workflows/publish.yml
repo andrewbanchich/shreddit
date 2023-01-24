@@ -10,4 +10,6 @@ jobs:
       
       steps:
 
+        - uses: actions/checkout@v2
+
         - run: cargo publish --token ${{ secrets.CRATES_IO_API_TOKEN }}
