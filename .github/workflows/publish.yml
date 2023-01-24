@@ -1,0 +1,15 @@
+name: publish
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  publish-crates-io:
+      name: Publish to crates.io
+      runs-on: ubuntu-latest
+      
+      steps:
+
+        - run: cargo publish --token
+          env:
+            GITHUB_TOKEN: ${{ secrets.CRATES_IO_API_TOKEN }}
