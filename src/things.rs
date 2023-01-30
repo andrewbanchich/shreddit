@@ -5,8 +5,11 @@ use futures_core::stream::Stream;
 use reqwest::{header::HeaderMap, Client};
 use serde::Deserialize;
 use serde_json::Value;
-use std::{collections::HashMap, str::FromStr};
+use std::{collections::HashMap, str::FromStr, time::Duration};
+use tokio::time::sleep;
 use tracing::{debug, error, info, instrument};
+
+use crate::cli::Config;
 
 #[derive(Debug)]
 pub enum ShredditError {
@@ -22,6 +25,7 @@ pub enum Thing {
         body: String,
         permalink: String,
         created_utc: f32,
+        score: i64,
     },
     #[serde(rename = "t3")]
     Post {
@@ -30,6 +34,7 @@ pub enum Thing {
         permalink: String,
         title: String,
         created_utc: f32,
+        score: i64,
     },
 }
 
@@ -75,12 +80,14 @@ impl Thing {
         DateTime::from_utc(dt, Utc)
     }
 
-    pub fn preview(s: &str) -> &str {
-        let end = if s.len() > 50 { 50 } else { s.len() };
-        &s[..end]
+    pub fn score(&self) -> i64 {
+        match self {
+            Thing::Comment { score, .. } => *score,
+            Thing::Post { score, .. } => *score,
+        }
     }
 
-    pub fn reddit_type_id(&self) -> &str {
+    pub fn type_id(&self) -> &str {
         match self {
             Thing::Comment { .. } => "t1",
             Thing::Post { .. } => "t3",
@@ -93,7 +100,7 @@ impl Thing {
             Thing::Post { id, .. } => id,
         };
 
-        format!("{type_id}_{unique_id}", type_id = self.reddit_type_id())
+        format!("{type_id}_{unique_id}", type_id = self.type_id())
     }
 
     /// https://www.reddit.com/dev/api/#GET_user_{username}_submitted
@@ -128,6 +135,17 @@ impl Thing {
 
         let uri = format!("https://reddit.com/user/{username}/{thing_type}.json{query_params}");
 
+        //         let res: serde_json::Value = client
+        //     .get(&uri)
+        //     .send()
+        //     .await
+        //     .unwrap()
+        //     .json()
+        //     .await
+        //     .unwrap();
+
+        // dbg!(res);
+
                 let res: ThingRes = client
             .get(&uri)
             .send()
@@ -136,6 +154,7 @@ impl Thing {
             .json()
             .await
             .unwrap();
+
         if res.data.children.is_empty() {
                     debug!("Completed listing {thing_type}");
                     break;
@@ -151,7 +170,7 @@ impl Thing {
             }
     }
 
-    #[instrument(level = "debug", skip(self, client, access_token))]
+    #[instrument(level = "debug", skip(client, access_token))]
     pub async fn edit(
         &self,
         client: &Client,
@@ -164,16 +183,7 @@ impl Thing {
             success: bool,
         }
 
-        let id = match self {
-            Self::Post { id, title, .. } => {
-                info!("Editing post: {title}");
-                format!("t3_{id}")
-            }
-            Self::Comment { id, body, .. } => {
-                info!("Editing comment: {}", Thing::preview(body));
-                format!("t1_{id}")
-            }
-        };
+        debug!("Editing...");
 
         if dry_run {
             return Ok(());
@@ -187,7 +197,10 @@ impl Thing {
 
         headers.insert("User-Agent", format!("ShredditClient/0.1").parse().unwrap());
 
-        let params = HashMap::from([("thing_id", id), ("text", LOREM_IPSUM.to_string())]);
+        let params = HashMap::from([
+            ("thing_id", self.fullname()),
+            ("text", LOREM_IPSUM.to_string()),
+        ]);
 
         let res: EditResponse = client
             .post("https://oauth.reddit.com/api/editusertext?raw_json=1")
@@ -229,18 +242,9 @@ impl Thing {
         Ok(())
     }
 
-    #[instrument(level = "info", skip(self, client, access_token))]
+    #[instrument(level = "info", skip(client, access_token))]
     pub async fn delete(&self, client: &Client, access_token: &str, dry_run: bool) {
-        let id = match self {
-            Self::Post { id, title, .. } => {
-                info!("Deleting post: {title}");
-                format!("t3_{id}")
-            }
-            Self::Comment { id, body, .. } => {
-                info!("Deleting comment: {}", Thing::preview(body));
-                format!("t1_{id}")
-            }
-        };
+        info!("Deleting...");
 
         if dry_run {
             return;
@@ -263,5 +267,30 @@ impl Thing {
             .send()
             .await
             .unwrap();
+    }
+
+    #[instrument(level = "debug", skip(config, client, access_token))]
+    pub async fn shred(&self, config: &Config, client: &Client, access_token: &str) {
+        if self.created() >= config.before {
+            debug!("Skipping due to `before` filter ({})", config.before);
+            return;
+        }
+
+        if let Some(max_score) = config.max_score {
+            if self.score() > max_score {
+                debug!("Skipping due to `max_score` filter ({})", max_score);
+                return;
+            }
+        }
+
+        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
+
+        self.edit(&client, &access_token, config.dry_run)
+            .await
+            .unwrap();
+
+        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
+
+        self.delete(client, access_token, config.dry_run).await;
     }
 }
