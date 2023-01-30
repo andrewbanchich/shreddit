@@ -7,9 +7,7 @@ categories:
       - 'enhancement'
   - title: '🐛 Bug Fixes'
     labels:
-      - 'fix'
       - 'bugfix'
-      - 'bug'
   - title: '🧰 Maintenance'
     label: 'chore'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
@@ -21,9 +19,12 @@ version-resolver:
   minor:
     labels:
       - 'minor'
+      - 'feature'
+      - 'enhancement'
   patch:
     labels:
       - 'patch'
+      - 'bugfix'
   default: patch
 template: |
   ## Changes
