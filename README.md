@@ -81,10 +81,10 @@ I'll be adding these as I go along. PRs are welcome!
 
 - [x] Dry run - preview what would happen with given configuration.
 - [x] Preserve comments made after a given datetime.
-- [ ] Max score - preserve comments with a score higher than this.
+- [x] Max score - preserve comments with a score higher than this.
 - [ ] Comment sorting
 - [ ] Clear vote - Remove your votes before deleting.
-- [ ] Item - configure what kinds of items to delete (submissions, comments, etc.)
+- [x] Item - configure what kinds of items to delete (submissions, comments, etc.)
 - [ ] Subreddit whitelist - anything in given subreddits will not be deleted.
 - [ ] Whitelist IDs - preserve specific posts by listing their IDs.
 - [ ] Preserve distinguished - Don't deleted distinguished comments.
