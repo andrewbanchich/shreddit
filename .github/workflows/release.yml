@@ -1,10 +1,11 @@
-name: release
+name: build
 on: [ push ]
 jobs:
 
   draft-release:
     name: release
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     outputs:
       version: ${{ steps.create_release.outputs.tag_name }}
     
