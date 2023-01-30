@@ -1,0 +1,32 @@
+name: check
+on:
+  pull_request:
+
+jobs:
+  check:
+    name: check
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      
+    - run: cargo check
+
+  rustfmt:
+    name: rustfmt
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      
+    - name: Check formatting
+      run: cargo fmt --all --check
