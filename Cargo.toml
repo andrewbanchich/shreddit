@@ -1,6 +1,6 @@
 [package]
 name = "shreddit"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Andrew Banchich <crates-io@andrew.banchi.ch>"]
 description = "Overwrite and delete your Reddit account history."
@@ -9,6 +9,7 @@ repository = "https://github.com/andrewbanchich/shreddit"
 
 [dependencies]
 async-stream = "0.3.3"
+chrono = { version = "0.4.23", features = ["serde"] }
 clap = { version = "4.1.4", features = ["derive", "env"] }
 dotenv = "0.15.0"
 futures-core = "0.3.25"
