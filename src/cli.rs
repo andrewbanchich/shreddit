@@ -4,9 +4,6 @@ use clap::Parser;
 use futures_util::pin_mut;
 use futures_util::stream::StreamExt;
 use reqwest::Client;
-use std::time::Duration;
-use tokio::time::sleep;
-use tracing::debug;
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -34,12 +31,15 @@ pub struct Config {
     #[clap(long, env = "SHREDDIT_DRY_RUN")]
     pub dry_run: bool,
 
-    /// What "things" you want to delete (e.g. `comments`, `posts`).
+    /// What "things" you want to delete.
     #[clap(long, env = "SHREDDIT_THINGS", default_values = &["posts", "comments"], value_delimiter = ',')]
     pub things: Vec<ThingType>,
 
     #[clap(long, env = "SHREDDIT_BEFORE", default_value_t = Utc::now())]
     pub before: DateTime<Utc>,
+
+    #[clap(long, env = "SHREDDIT_MAX_SCORE")]
+    pub max_score: Option<i64>,
 }
 
 impl Config {
@@ -50,26 +50,7 @@ impl Config {
             pin_mut!(things);
 
             while let Some(thing) = things.next().await {
-                if thing.created() >= self.before {
-                    debug!(
-                        "Skipping {} (created {}) due to `before` filter ({})",
-                        thing.fullname(),
-                        thing.created(),
-                        self.before
-                    );
-                    continue;
-                }
-
-                sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
-
-                thing
-                    .edit(&client, &access_token, self.dry_run)
-                    .await
-                    .unwrap();
-
-                sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
-
-                thing.delete(client, access_token, self.dry_run).await;
+                thing.shred(self, client, access_token).await;
             }
         }
     }
