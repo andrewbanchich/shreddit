@@ -42,16 +42,20 @@ Download the binary from the [GitHub Releases](https://github.com/andrewbanchich
 # How to use
 
 ```
-USAGE:
-    shreddit --username <USERNAME> --password <PASSWORD> --client-id <CLIENT_ID> --client-secret <CLIENT_SECRET>
+Overwrite and delete your Reddit account history.
 
-OPTIONS:
-        --client-id <CLIENT_ID>            [env: SHREDDIT_CLIENT_ID=]
-        --client-secret <CLIENT_SECRET>    [env: SHREDDIT_CLIENT_SECRET=]
-    -h, --help                             Print help information
-    -p, --password <PASSWORD>              [env: SHREDDIT_PASSWORD=]
-    -u, --username <USERNAME>              [env: SHREDDIT_USERNAME=]
-    -V, --version                          Print version information
+Usage: shreddit [OPTIONS] --username <USERNAME> --password <PASSWORD> --client-id <CLIENT_ID> --client-secret <CLIENT_SECRET>
+
+Options:
+  -u, --username <USERNAME>            Your Reddit username [env: SHREDDIT_USERNAME=your_username]
+  -p, --password <PASSWORD>            Your Reddit password [env: SHREDDIT_PASSWORD=SuperSecretPassword123]
+      --client-id <CLIENT_ID>          To create client credentials, you need to navigate to `https://www.reddit.com/prefs/apps/`, click `create another app...` and fill out the form. Select the `script` type, and set `redirect uri` as `http://localhost:8080` [env: SHREDDIT_CLIENT_ID=lk4j56lkj3lk4j5656]
+      --client-secret <CLIENT_SECRET>  The client secret from when you created client credentials [env: SHREDDIT_CLIENT_SECRET=kl2kj3KJ345lkhRAWE]
+      --dry-run                        If set, shreddit will not modify or delete anything. It will simply log what it would do if not in dry run mode. This allows you to preview the plan of action before executing [env: SHREDDIT_DRY_RUN=false]
+      --things <THINGS>                What "things" you want to delete (e.g. `comments`, `posts`) [env: SHREDDIT_THINGS=posts,comments] [default: posts comments] [possible values: posts, comments]
+      --before <BEFORE>                [env: SHREDDIT_BEFORE=2023-01-01T00:00:00Z] [default: "2023-01-30 01:17:14.130347218 UTC"]
+  -h, --help                           Print help
+  -V, --version                        Print version
 ```
 
 You can choose to pass in configuration settings via CLI arguments like:
@@ -76,7 +80,7 @@ These are the other features [Python Shreddit had](https://github.com/x89/Shredd
 I'll be adding these as I go along. PRs are welcome!
 
 - [x] Dry run - preview what would happen with given configuration.
-- [ ] Hours of comments you want to preserve.
+- [x] Preserve comments made after a given datetime.
 - [ ] Max score - preserve comments with a score higher than this.
 - [ ] Comment sorting
 - [ ] Clear vote - Remove your votes before deleting.

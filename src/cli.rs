@@ -1,10 +1,12 @@
 use crate::things::{Thing, ThingType};
+use chrono::{DateTime, Utc};
 use clap::Parser;
 use futures_util::pin_mut;
 use futures_util::stream::StreamExt;
 use reqwest::Client;
 use std::time::Duration;
 use tokio::time::sleep;
+use tracing::debug;
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -35,6 +37,9 @@ pub struct Config {
     /// What "things" you want to delete (e.g. `comments`, `posts`).
     #[clap(long, env = "SHREDDIT_THINGS", default_values = &["posts", "comments"], value_delimiter = ',')]
     pub things: Vec<ThingType>,
+
+    #[clap(long, env = "SHREDDIT_BEFORE", default_value_t = Utc::now())]
+    pub before: DateTime<Utc>,
 }
 
 impl Config {
@@ -45,6 +50,16 @@ impl Config {
             pin_mut!(things);
 
             while let Some(thing) = things.next().await {
+                if thing.created() >= self.before {
+                    debug!(
+                        "Skipping {} (created {}) due to `before` filter ({})",
+                        thing.fullname(),
+                        thing.created(),
+                        self.before
+                    );
+                    continue;
+                }
+
                 sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
 
                 thing
