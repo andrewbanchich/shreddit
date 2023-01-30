@@ -1,5 +1,9 @@
-name: build
-on: [ push ]
+name: release
+on:
+  push:
+    branches:
+      - master
+
 jobs:
 
   draft-release:
