@@ -4,6 +4,7 @@ use clap::Parser;
 use futures_util::pin_mut;
 use futures_util::stream::StreamExt;
 use reqwest::Client;
+use tracing::info;
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -45,6 +46,8 @@ pub struct Config {
 impl Config {
     pub async fn run(&self, client: &Client, access_token: &str) {
         for thing_type in &self.things {
+            info!("Shredding {thing_type:?}");
+
             let things = Thing::list(client, thing_type, &self.username).await;
 
             pin_mut!(things);

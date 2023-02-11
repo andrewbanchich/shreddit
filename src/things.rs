@@ -125,28 +125,18 @@ impl Thing {
             let mut last_seen = None;
 
             loop {
-            let query_params = if let Some(last_seen) = last_seen {
-        format!("?after={last_seen}")
-            } else {
-        String::new()
-            };
+        let query_params = if let Some(last_seen) = last_seen {
+            format!("?after={last_seen}")
+        } else {
+            String::new()
+        };
 
         debug!("Iterating over next page of results");
 
         let uri = format!("https://reddit.com/user/{username}/{thing_type}.json{query_params}");
 
-        //         let res: serde_json::Value = client
-        //     .get(&uri)
-        //     .send()
-        //     .await
-        //     .unwrap()
-        //     .json()
-        //     .await
-        //     .unwrap();
 
-        // dbg!(res);
-
-                let res: ThingRes = client
+                let json: serde_json::Value = client
             .get(&uri)
             .send()
             .await
@@ -154,6 +144,9 @@ impl Thing {
             .json()
             .await
             .unwrap();
+
+
+        let res: ThingRes = serde_json::from_value(json).unwrap();
 
         if res.data.children.is_empty() {
                     debug!("Completed listing {thing_type}");
@@ -167,10 +160,10 @@ impl Thing {
                 }
             }
 
-            }
+        }
     }
 
-    #[instrument(level = "debug", skip(client, access_token))]
+    #[instrument(level = "debug", skip(self, client, access_token))]
     pub async fn edit(
         &self,
         client: &Client,
@@ -242,7 +235,7 @@ impl Thing {
         Ok(())
     }
 
-    #[instrument(level = "info", skip(client, access_token))]
+    #[instrument(level = "info", skip(self, client, access_token))]
     pub async fn delete(&self, client: &Client, access_token: &str, dry_run: bool) {
         info!("Deleting...");
 
@@ -258,9 +251,9 @@ impl Thing {
 
         headers.insert("User-Agent", format!("ShredditClient/0.1").parse().unwrap());
 
-        let params = HashMap::from([("text", LOREM_IPSUM.to_string())]);
+        let params = HashMap::from([("id", self.fullname())]);
 
-        client
+        let _res = client
             .post("https://oauth.reddit.com/api/del")
             .headers(headers)
             .form(&params)
