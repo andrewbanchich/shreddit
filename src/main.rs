@@ -38,7 +38,7 @@ fn init_tracing() {
         .or_else(|_| EnvFilter::try_new("shreddit"))
         .unwrap();
 
-    let format = fmt::layer().with_target(false);
+    let format = fmt::layer().with_target(false).pretty();
 
     tracing_subscriber::registry()
         .with(filter)
