@@ -4,7 +4,7 @@ use clap::Parser;
 use futures_util::pin_mut;
 use futures_util::stream::StreamExt;
 use reqwest::Client;
-use tracing::info;
+use tracing::{debug, info};
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -48,12 +48,24 @@ impl Config {
         for thing_type in &self.things {
             info!("Shredding {thing_type:?}");
 
-            let things = Thing::list(client, thing_type, &self.username).await;
+            // TODO For some reason, pagination doesn't continue for all Things
+            // without this outer loop. Find out why Thing::list() doesn't continue to the end
+            // of all Things.
+            loop {
+                let things = Thing::list(client, thing_type, &self.username).await;
 
-            pin_mut!(things);
+                pin_mut!(things);
 
-            while let Some(thing) = things.next().await {
-                thing.shred(self, client, access_token).await;
+                if let Some(thing) = things.next().await {
+                    thing.shred(self, client, access_token).await;
+                } else {
+                    debug!("Completed listing {thing_type:?}");
+                    break;
+                }
+
+                while let Some(thing) = things.next().await {
+                    thing.shred(self, client, access_token).await;
+                }
             }
         }
     }

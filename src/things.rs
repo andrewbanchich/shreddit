@@ -149,7 +149,6 @@ impl Thing {
         let res: ThingRes = serde_json::from_value(json).unwrap();
 
         if res.data.children.is_empty() {
-                    debug!("Completed listing {thing_type}");
                     break;
         } else {
             last_seen = res.data.children.last().map(|t| t.fullname());
