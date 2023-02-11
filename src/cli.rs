@@ -4,7 +4,7 @@ use clap::Parser;
 use futures_util::pin_mut;
 use futures_util::stream::StreamExt;
 use reqwest::Client;
-use tracing::info;
+use tracing::{debug, info};
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -59,6 +59,7 @@ impl Config {
                 if let Some(thing) = things.next().await {
                     thing.shred(self, client, access_token).await;
                 } else {
+                    debug!("Completed listing {thing_type:?}");
                     break;
                 }
 
