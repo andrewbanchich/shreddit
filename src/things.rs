@@ -258,7 +258,7 @@ impl Thing {
 
         headers.insert("User-Agent", format!("ShredditClient/0.1").parse().unwrap());
 
-        let params = HashMap::from([("text", LOREM_IPSUM.to_string())]);
+        let params = HashMap::from([("id", self.fullname())]);
 
         client
             .post("https://oauth.reddit.com/api/del")
