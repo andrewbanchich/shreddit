@@ -1,7 +1,10 @@
+use std::error::Error;
+
 use access_token::new_access_token;
 use clap::Parser;
 use cli::Config;
 use reqwest::Client;
+use tracing::error;
 use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 mod access_token;
@@ -9,7 +12,7 @@ mod cli;
 mod things;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn Error>> {
     dotenv::from_filename("shreddit.env").ok();
 
     let config = Config::parse();
@@ -17,9 +20,17 @@ async fn main() {
     init_tracing();
 
     let client = Client::new();
-    let access_token = new_access_token(&config, &client).await;
+    let access_token = match new_access_token(&config, &client).await {
+        Ok(token) => token,
+        Err(e) => {
+            error!("{e}");
+            return Err(e.into());
+        }
+    };
 
     config.run(&client, &access_token).await;
+
+    Ok(())
 }
 
 fn init_tracing() {
