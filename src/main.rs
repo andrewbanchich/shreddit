@@ -11,7 +11,7 @@ mod access_token;
 mod cli;
 mod things;
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
     dotenv::from_filename("shreddit.env").ok();
 
