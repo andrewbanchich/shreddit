@@ -291,11 +291,14 @@ impl Thing {
 
         sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
 
-        self.edit(&client, &access_token, config.dry_run)
-            .await
-            .unwrap();
+        // Posts cannot be edited
+        if matches!(self, Thing::Comment { .. }) {
+            self.edit(&client, &access_token, config.dry_run)
+                .await
+                .unwrap();
 
-        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
+            sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
+        }
 
         self.delete(client, access_token, config.dry_run).await;
     }
