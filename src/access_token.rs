@@ -1,5 +1,6 @@
 use crate::cli::Config;
 use reqwest::Client;
+use serde::Deserialize;
 use std::collections::HashMap;
 
 pub async fn new_access_token(args: &Config, client: &Client) -> Result<String, String> {
@@ -9,7 +10,7 @@ pub async fn new_access_token(args: &Config, client: &Client) -> Result<String, 
         ("password", &args.password),
     ]);
 
-    let res: serde_json::Value = client
+    let res: AccessTokenResponse = client
         .post("https://www.reddit.com/api/v1/access_token")
         .form(&params)
         .basic_auth(&args.client_id, Some(&args.client_secret))
@@ -20,9 +21,21 @@ pub async fn new_access_token(args: &Config, client: &Client) -> Result<String, 
         .await
         .unwrap();
 
-    if res.get("error").is_some() {
-        return Err(res["message"].as_str().unwrap().to_owned());
-    } else {
-        return Ok(res["access_token"].as_str().unwrap().to_owned());
+    match res {
+        AccessTokenResponse::Success { access_token } => Ok(access_token),
+        AccessTokenResponse::Error { message, .. } => Err(message),
     }
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+enum AccessTokenResponse {
+    Success {
+        access_token: String,
+    },
+    Error {
+        #[allow(dead_code)]
+        error: String,
+        message: String,
+    },
 }
