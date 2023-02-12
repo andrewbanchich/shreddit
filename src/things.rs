@@ -39,8 +39,10 @@ pub enum Thing {
 }
 
 #[derive(Debug, Deserialize)]
-struct ThingRes {
-    data: ThingResData,
+#[serde(untagged)]
+enum ThingRes {
+    Success { data: ThingResData },
+    Error(Value),
 }
 
 #[derive(Debug, Deserialize)]
@@ -136,7 +138,7 @@ impl Thing {
         let uri = format!("https://reddit.com/user/{username}/{thing_type}.json{query_params}");
 
 
-                let json: serde_json::Value = client
+                let res: ThingRes = client
             .get(&uri)
             .send()
             .await
@@ -146,19 +148,26 @@ impl Thing {
             .unwrap();
 
 
-        let res: ThingRes = serde_json::from_value(json).unwrap();
-
-        if res.data.children.is_empty() {
-                    break;
-        } else {
-            last_seen = res.data.children.last().map(|t| t.fullname());
-        }
-
-                for thing in res.data.children {
-            yield thing;
-                }
+        match res {
+            ThingRes::Success { data} => {
+            if data.children.is_empty() {
+                break;
+            } else {
+                last_seen = data.children.last().map(|t| t.fullname());
             }
 
+            for thing in data.children {
+                yield thing;
+            }
+            }
+            ThingRes::Error(e) => {
+        error!("{e}:#?");
+        break
+            }
+
+        }
+
+            }
         }
     }
 
@@ -170,9 +179,10 @@ impl Thing {
         dry_run: bool,
     ) -> Result<(), ShredditError> {
         #[derive(Debug, Deserialize)]
-        struct EditResponse {
-            jquery: Vec<Value>,
-            success: bool,
+        #[serde(untagged)]
+        enum EditResponse {
+            Success { jquery: Vec<Value>, success: bool },
+            Unexpected(Value),
         }
 
         debug!("Editing...");
@@ -205,29 +215,33 @@ impl Thing {
             .await
             .unwrap();
 
-        if !res.success {
-            if res
-                .jquery
-                .iter()
-                .find(|array| {
-                    array
-                        .as_array()
-                        .unwrap()
+        match res {
+            EditResponse::Success { jquery, success } => {
+                if !success {
+                    if jquery
                         .iter()
-                        .find(|item| match item {
-                            Value::Array(a) => a.contains(&Value::String(
-                                ".error.RATELIMIT.field-ratelimit".to_string(),
-                            )),
-                            _ => false,
+                        .find(|array| {
+                            array
+                                .as_array()
+                                .unwrap()
+                                .iter()
+                                .find(|item| match item {
+                                    Value::Array(a) => a.contains(&Value::String(
+                                        ".error.RATELIMIT.field-ratelimit".to_string(),
+                                    )),
+                                    _ => false,
+                                })
+                                .is_some()
                         })
                         .is_some()
-                })
-                .is_some()
-            {
-                error!("RATE LIMITED");
-                return Err(ShredditError::RateLimited);
-            } else {
-                error!("Couldn't edit: {res:#?}");
+                    {
+                        error!("RATE LIMITED");
+                        return Err(ShredditError::RateLimited);
+                    }
+                }
+            }
+            EditResponse::Unexpected(v) => {
+                error!("Couldn't edit: {v:#?}")
             }
         }
 
