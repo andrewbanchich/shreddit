@@ -1,9 +1,12 @@
+use std::time::Duration;
+
 use crate::things::{Thing, ThingType};
 use chrono::{DateTime, Utc};
 use clap::Parser;
 use futures_util::pin_mut;
 use futures_util::stream::StreamExt;
 use reqwest::Client;
+use tokio::time::sleep;
 use tracing::{debug, info};
 
 #[derive(Debug, Parser)]
@@ -46,27 +49,37 @@ pub struct Config {
 impl Config {
     pub async fn run(&self, client: &Client, access_token: &str) {
         for thing_type in &self.things {
-            info!("Shredding {thing_type:?}");
+            info!("Shredding {thing_type:?}...");
 
-            // TODO For some reason, pagination doesn't continue for all Things
-            // without this outer loop. Find out why Thing::list() doesn't continue to the end
-            // of all Things.
-            loop {
-                let things = Thing::list(client, thing_type, &self.username).await;
+            let things = Thing::list(client, thing_type, &self.username).await;
 
-                pin_mut!(things);
+            pin_mut!(things);
 
-                if let Some(thing) = things.next().await {
-                    thing.shred(self, client, access_token).await;
+            while let Some(thing) = things.next().await {
+                if should_skip(&thing, self) {
+                    continue;
                 } else {
-                    debug!("Completed listing {thing_type:?}");
-                    break;
-                }
-
-                while let Some(thing) = things.next().await {
                     thing.shred(self, client, access_token).await;
+                    sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
                 }
             }
+
+            debug!("Completed listing {thing_type:?}");
         }
     }
+}
+
+fn should_skip(thing: &Thing, config: &Config) -> bool {
+    if thing.created() >= config.before {
+        debug!("Skipping due to `before` filter ({})", config.before);
+        return true;
+    } else if let Some(max_score) = config.max_score {
+        if thing.score() > max_score {
+            debug!("Skipping due to `max_score` filter ({max_score})");
+
+            return true;
+        }
+    }
+
+    false
 }

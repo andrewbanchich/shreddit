@@ -112,19 +112,18 @@ impl Thing {
         thing_type: &ThingType,
         username: &str,
     ) -> impl Stream<Item = Thing> {
+        info!("Fetching {thing_type:?}...");
+
         let thing_type = match thing_type {
             ThingType::Comments => "comments",
             ThingType::Posts => "submitted",
         };
 
-        info!("Fetching {thing_type}...");
-
         let username = username.to_owned();
         let client = client.clone();
 
         stream! {
-            // The fullname of the last seen Thing.
-            let mut last_seen = None;
+        let mut last_seen = None;
 
             loop {
         let query_params = if let Some(last_seen) = last_seen {
@@ -133,10 +132,7 @@ impl Thing {
             String::new()
         };
 
-        debug!("Iterating over next page of results");
-
         let uri = format!("https://reddit.com/user/{username}/{thing_type}.json{query_params}");
-
 
                 let res: ThingRes = client
             .get(&uri)
@@ -147,18 +143,22 @@ impl Thing {
             .await
             .unwrap();
 
-
         match res {
             ThingRes::Success { data} => {
-            if data.children.is_empty() {
-                break;
-            } else {
-                last_seen = data.children.last().map(|t| t.fullname());
-            }
 
-            for thing in data.children {
-                yield thing;
-            }
+        let results_len = data.children.len();
+
+        debug!("Page contained {results_len} results");
+
+        if results_len == 0 {
+                    break;
+        } else {
+                    last_seen = data.children.last().map(|t| t.fullname());
+        }
+
+        for thing in data.children {
+                    yield thing;
+        }
             }
             ThingRes::Error(e) => {
         error!("{e}:#?");
@@ -270,20 +270,6 @@ impl Thing {
 
     #[instrument(level = "debug", skip(config, client, access_token))]
     pub async fn shred(&self, config: &Config, client: &Client, access_token: &str) {
-        if self.created() >= config.before {
-            debug!("Skipping due to `before` filter ({})", config.before);
-            return;
-        }
-
-        if let Some(max_score) = config.max_score {
-            if self.score() > max_score {
-                debug!("Skipping due to `max_score` filter ({})", max_score);
-                return;
-            }
-        }
-
-        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
-
         // Posts cannot be edited
         if matches!(self, Thing::Comment { .. }) {
             self.edit(client, access_token, config.dry_run)
