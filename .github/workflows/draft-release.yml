@@ -1,4 +1,4 @@
-name: release
+name: Draft Release
 on:
   push:
     branches:
@@ -7,7 +7,7 @@ on:
 jobs:
 
   draft-release:
-    name: release
+    name: Draft Release
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
     outputs:
