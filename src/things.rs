@@ -181,7 +181,11 @@ impl Thing {
         #[derive(Debug, Deserialize)]
         #[serde(untagged)]
         enum EditResponse {
-            Success { jquery: Vec<Value>, success: bool },
+            Success {
+                jquery: Vec<Value>,
+                #[allow(dead_code)]
+                success: bool,
+            },
             Unexpected(Value),
         }
 
@@ -197,7 +201,7 @@ impl Thing {
             format!("Bearer {access_token}").parse().unwrap(),
         );
 
-        headers.insert("User-Agent", format!("ShredditClient/0.1").parse().unwrap());
+        headers.insert("User-Agent", "ShredditClient/0.1".parse().unwrap());
 
         let params = HashMap::from([
             ("thing_id", self.fullname()),
@@ -216,28 +220,17 @@ impl Thing {
             .unwrap();
 
         match res {
-            EditResponse::Success { jquery, success } => {
-                if !success {
-                    if jquery
-                        .iter()
-                        .find(|array| {
-                            array
-                                .as_array()
-                                .unwrap()
-                                .iter()
-                                .find(|item| match item {
-                                    Value::Array(a) => a.contains(&Value::String(
-                                        ".error.RATELIMIT.field-ratelimit".to_string(),
-                                    )),
-                                    _ => false,
-                                })
-                                .is_some()
-                        })
-                        .is_some()
-                    {
-                        error!("RATE LIMITED");
-                        return Err(ShredditError::RateLimited);
-                    }
+            EditResponse::Success { jquery, .. } => {
+                if jquery.iter().any(|array| {
+                    array.as_array().unwrap().iter().any(|item| match item {
+                        Value::Array(a) => a.contains(&Value::String(
+                            ".error.RATELIMIT.field-ratelimit".to_string(),
+                        )),
+                        _ => false,
+                    })
+                }) {
+                    error!("RATE LIMITED");
+                    return Err(ShredditError::RateLimited);
                 }
             }
             EditResponse::Unexpected(v) => {
@@ -262,7 +255,7 @@ impl Thing {
             format!("Bearer {access_token}").parse().unwrap(),
         );
 
-        headers.insert("User-Agent", format!("ShredditClient/0.1").parse().unwrap());
+        headers.insert("User-Agent", "ShredditClient/0.1".parse().unwrap());
 
         let params = HashMap::from([("id", self.fullname())]);
 
@@ -293,7 +286,7 @@ impl Thing {
 
         // Posts cannot be edited
         if matches!(self, Thing::Comment { .. }) {
-            self.edit(&client, &access_token, config.dry_run)
+            self.edit(client, access_token, config.dry_run)
                 .await
                 .unwrap();
 
