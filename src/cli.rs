@@ -44,6 +44,14 @@ pub struct Config {
 
     #[clap(long, env = "SHREDDIT_MAX_SCORE")]
     pub max_score: Option<i64>,
+
+    /// The User-Agent for Reddit API requests.
+    #[clap(
+        long,
+        env = "SHREDDIT_USER_AGENT",
+        default_value = "ShredditRustClient"
+    )]
+    pub user_agent: String,
 }
 
 impl Config {

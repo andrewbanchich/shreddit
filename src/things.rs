@@ -176,7 +176,7 @@ impl Thing {
         &self,
         client: &Client,
         access_token: &str,
-        dry_run: bool,
+        config: &Config,
     ) -> Result<(), ShredditError> {
         #[derive(Debug, Deserialize)]
         #[serde(untagged)]
@@ -191,7 +191,7 @@ impl Thing {
 
         debug!("Editing...");
 
-        if dry_run {
+        if config.dry_run {
             return Ok(());
         }
 
@@ -201,7 +201,7 @@ impl Thing {
             format!("Bearer {access_token}").parse().unwrap(),
         );
 
-        headers.insert("User-Agent", "ShredditClient/0.1".parse().unwrap());
+        headers.insert("User-Agent", config.user_agent.parse().unwrap());
 
         let params = HashMap::from([
             ("thing_id", self.fullname()),
@@ -242,10 +242,10 @@ impl Thing {
     }
 
     #[instrument(level = "info", skip(self, client, access_token))]
-    pub async fn delete(&self, client: &Client, access_token: &str, dry_run: bool) {
+    pub async fn delete(&self, client: &Client, access_token: &str, config: &Config) {
         info!("Deleting...");
 
-        if dry_run {
+        if config.dry_run {
             return;
         }
 
@@ -255,7 +255,7 @@ impl Thing {
             format!("Bearer {access_token}").parse().unwrap(),
         );
 
-        headers.insert("User-Agent", "ShredditClient/0.1".parse().unwrap());
+        headers.insert("User-Agent", config.user_agent.parse().unwrap());
 
         let params = HashMap::from([("id", self.fullname())]);
 
@@ -272,13 +272,11 @@ impl Thing {
     pub async fn shred(&self, config: &Config, client: &Client, access_token: &str) {
         // Posts cannot be edited
         if matches!(self, Thing::Comment { .. }) {
-            self.edit(client, access_token, config.dry_run)
-                .await
-                .unwrap();
+            self.edit(client, access_token, config).await.unwrap();
 
             sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
         }
 
-        self.delete(client, access_token, config.dry_run).await;
+        self.delete(client, access_token, config).await;
     }
 }
