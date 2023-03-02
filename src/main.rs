@@ -6,7 +6,7 @@ use cli::Config;
 use futures_util::{pin_mut, StreamExt};
 use reqwest::Client;
 use things::Shred;
-use tracing::{debug, error, info};
+use tracing::{error, info};
 use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 use crate::{
