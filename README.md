@@ -45,15 +45,30 @@ Overwrite and delete your Reddit account history.
 Usage: shreddit [OPTIONS] --username <USERNAME> --password <PASSWORD> --client-id <CLIENT_ID> --client-secret <CLIENT_SECRET>
 
 Options:
-  -u, --username <USERNAME>            Your Reddit username [env: SHREDDIT_USERNAME=your_username]
-  -p, --password <PASSWORD>            Your Reddit password [env: SHREDDIT_PASSWORD=SuperSecretPassword123]
-      --client-id <CLIENT_ID>          To create client credentials, you need to navigate to `https://www.reddit.com/prefs/apps/`, click `create another app...` and fill out the form. Select the `script` type, and set `redirect uri` as `http://localhost:8080` [env: SHREDDIT_CLIENT_ID=lk4j56lkj3lk4j5656]
-      --client-secret <CLIENT_SECRET>  The client secret from when you created client credentials [env: SHREDDIT_CLIENT_SECRET=kl2kj3KJ345lkhRAWE]
-      --dry-run                        If set, shreddit will not modify or delete anything. It will simply log what it would do if not in dry run mode. This allows you to preview the plan of action before executing [env: SHREDDIT_DRY_RUN=false]
-      --things <THINGS>                What "things" you want to delete (e.g. `comments`, `posts`) [env: SHREDDIT_THINGS=posts,comments] [default: posts comments] [possible values: posts, comments]
-      --before <BEFORE>                [env: SHREDDIT_BEFORE=2023-01-01T00:00:00Z] [default: "2023-01-30 01:17:14.130347218 UTC"]
-  -h, --help                           Print help
-  -V, --version                        Print version
+  -u, --username <USERNAME>
+          Your Reddit username [env: SHREDDIT_USERNAME=your_username]
+  -p, --password <PASSWORD>
+          Your Reddit password [env: SHREDDIT_PASSWORD=SuperSecretPassword123]
+      --client-id <CLIENT_ID>
+          To create client credentials, you need to navigate to `https://www.reddit.com/prefs/apps/`, click `create another app...` and fill out the form. Select the `script` type, and set `redirect uri` as `http://localhost:8080` [env: SHREDDIT_CLIENT_ID=lk4j56lkj3lk4j5656]
+      --client-secret <CLIENT_SECRET>
+          The client secret from when you created client credentials [env: SHREDDIT_CLIENT_SECRET=kl2kj3KJ345lkhRAWE]
+      --dry-run
+          If set, shreddit will not modify or delete anything. It will simply log what it would do if not in dry run mode. This allows you to preview the plan of action before executing [env: SHREDDIT_DRY_RUN=false]
+      --thing-types <THING_TYPES>
+          What "things" you want to delete [env: SHREDDIT_THING_TYPES=posts,comments] [default: posts comments] [possible values: posts, comments, friends]
+      --before <BEFORE>
+          [env: SHREDDIT_BEFORE=2023-01-01T00:00:00Z] [default: "2023-03-02 17:49:30.225134209 UTC"]
+      --max-score <MAX_SCORE>
+          [env: SHREDDIT_MAX_SCORE=100]
+      --user-agent <USER_AGENT>
+          The User-Agent for Reddit API requests [env: SHREDDIT_USER_AGENT=ShredditRustClient] [default: ShredditRustClient]
+      --gdpr-export-dir <GDPR_EXPORT_DIR>
+          The path of the directory of the unzipped GDPR export data. If set, `shreddit` will use the GDPR export folder instead of Reddit's APIs for discovering your data [env: SHREDDIT_GDPR_EXPORT_DIR=/home/you/Downloads/export_yourusername_20230101]
+  -h, --help
+          Print help
+  -V, --version
+          Print version
 ```
 
 You can choose to pass in configuration settings via CLI arguments like:
@@ -70,6 +85,12 @@ However, this is purely optional.
 ## Dry run
 
 You can use `--dry-run` or `SHREDDIT_DRY_RUN=true` to see what it would do without it actually doing anything.
+
+## Delete ALL your data using GDPR export
+
+1. Request an archive of all your data by [following these steps](https://reddit.zendesk.com/hc/en-us/articles/360043048352-How-do-I-request-a-copy-of-my-Reddit-data-and-information-).
+2. Download the archive and extract it.
+3. Run `shreddit` with the `--gdpr-export-dir` flag set to the path of the directory it was extracted to.
 
 ## Other features
 
