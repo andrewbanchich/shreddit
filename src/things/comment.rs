@@ -32,6 +32,7 @@ enum Source {
     Api {
         score: i64,
         created_utc: f32,
+        can_gild: bool,
     },
 
     // GDPR columns
@@ -142,9 +143,30 @@ impl Shred for Comment {
                     error!("RATE LIMITED");
                 }
             }
-            EditResponse::Unexpected(v) => {
-                error!("Couldn't edit: {v:#?}")
-            }
+            EditResponse::Unexpected(v) => match self.source {
+                Source::Api { can_gild, .. } => {
+                    if !can_gild {
+                        error!("Couldn't edit - comment was probably removed by a moderator (`can_gild` == {})", can_gild);
+                    } else {
+                        error!("Couldn't edit: {v:#?}");
+                    }
+                }
+                Source::Gdpr { .. } => {
+                    let comment = self.to_api(client, access_token, config).await;
+                    match comment.source {
+                        Source::Api { can_gild, .. } => {
+                            if !can_gild {
+                                error!("Couldn't edit - comment was probably removed by a moderator (`can_gild` == {})", can_gild);
+                            } else {
+                                error!("Couldn't edit: {v:#?}");
+                            }
+                        }
+                        Source::Gdpr { .. } => {
+                            unreachable!()
+                        }
+                    }
+                }
+            },
         };
 
         sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
@@ -194,6 +216,41 @@ impl Comment {
         }
 
         false
+    }
+
+    async fn to_api(&self, client: &Client, access_token: &str, config: &Config) -> Self {
+        debug!("Getting comment from API...");
+
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            "Authorization",
+            format!("Bearer {access_token}").parse().unwrap(),
+        );
+
+        headers.insert("User-Agent", config.user_agent.parse().unwrap());
+
+        let uri = format!(
+            "https://oauth.reddit.com/api/info.json?id={}",
+            self.fullname()
+        );
+
+        let res: Response = client
+            .get(&uri)
+            .headers(headers)
+            .send()
+            .await
+            .unwrap()
+            .json()
+            .await
+            .unwrap();
+
+        match res {
+            Response::Success { data } => data.children.into_iter().next().unwrap().data,
+            Response::Error(e) => {
+                error!("{e:#?}");
+                todo!();
+            }
+        }
     }
 }
 
