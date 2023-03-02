@@ -9,8 +9,10 @@ repository = "https://github.com/andrewbanchich/shreddit"
 
 [dependencies]
 async-stream = "0.3.3"
+async-trait = "0.1.64"
 chrono = { version = "0.4.23", features = ["serde"] }
 clap = { version = "4.1.4", features = ["derive", "env"] }
+csv = "1.2.0"
 dotenv = "0.15.0"
 futures-core = "0.3.26"
 futures-util = "0.3.26"
