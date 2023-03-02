@@ -52,7 +52,7 @@ impl Gdpr for Comment {
 
 #[async_trait]
 impl Shred for Comment {
-    #[instrument(level = "info", skip(self, client, access_token))]
+    #[instrument(level = "info", skip(client, access_token))]
     async fn delete(&self, client: &Client, access_token: &str, config: &Config) {
         info!("Deleting...");
 
@@ -85,7 +85,7 @@ impl Shred for Comment {
         sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
     }
 
-    #[instrument(level = "debug", skip(self, client, access_token))]
+    #[instrument(level = "debug", skip(client, access_token))]
     async fn edit(&self, client: &Client, access_token: &str, config: &Config) {
         #[allow(unused)]
         #[derive(Debug, Deserialize)]
