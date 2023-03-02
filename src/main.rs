@@ -11,7 +11,7 @@ use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt, Env
 
 use crate::{
     sources::gdpr,
-    things::{comment, post, Comment, Friend, Post, ThingType},
+    things::{comment, post, Comment, Friend, Post, SavedPost, ThingType},
 };
 
 mod access_token;
@@ -49,6 +49,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             comment.shred(&client, &access_token, &config).await;
                         }
                     }
+
                     ThingType::Friends => {
                         let friends = gdpr::list::<Friend>(export_path);
 
@@ -62,6 +63,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
                         for post in posts {
                             post.shred(&client, &access_token, &config).await;
+                        }
+                    }
+
+                    ThingType::SavedPosts => {
+                        let saved_posts = gdpr::list::<SavedPost>(export_path);
+
+                        for saved_post in saved_posts {
+                            saved_post.shred(&client, &access_token, &config).await;
                         }
                     }
                 }
@@ -84,6 +93,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             post.shred(&client, &access_token, &config).await;
                         }
                     }
+
                     ThingType::Comments => {
                         let comments = comment::list(&client, &config.username).await;
                         pin_mut!(comments);
@@ -92,8 +102,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             comment.shred(&client, &access_token, &config).await;
                         }
                     }
+
                     ThingType::Friends => {
                         error!("Shredding friends based on API is a TODO");
+                        todo!();
+                    }
+
+                    ThingType::SavedPosts => {
+                        error!("Shredding saved posts based on API is a TODO");
                         todo!();
                     }
                 }

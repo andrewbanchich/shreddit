@@ -7,6 +7,9 @@ pub use comment::*;
 pub mod post;
 pub use post::*;
 
+pub mod saved_post;
+pub use saved_post::*;
+
 use clap::ValueEnum;
 use reqwest::Client;
 use serde::Deserialize;
@@ -74,6 +77,7 @@ pub enum ThingType {
     Posts,
     Comments,
     Friends,
+    SavedPosts,
 }
 
 impl FromStr for ThingType {
@@ -83,6 +87,8 @@ impl FromStr for ThingType {
         match s {
             "posts" => Ok(Self::Posts),
             "comments" => Ok(Self::Comments),
+            "friends" => Ok(Self::Friends),
+            "saved-posts" => Ok(Self::SavedPosts),
             _ => Err("Invalid type"),
         }
     }
