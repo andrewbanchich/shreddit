@@ -25,7 +25,6 @@ This brings several benefits:
 - You don't need to have Python or anything else installed.
 - Instead of having `shreddit.yml` and `praw.ini` config files, all configuration can be done through CLI commands
 with environment variables as default fallbacks.
-- I found that [Python Shreddit](https://github.com/x89/Shreddit) didn't delete comments which mods removed. This does.
 
 # Installation
 
