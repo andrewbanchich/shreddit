@@ -10,6 +10,9 @@ pub use post::*;
 pub mod saved_post;
 pub use saved_post::*;
 
+pub mod saved_comment;
+pub use saved_comment::*;
+
 use clap::ValueEnum;
 use reqwest::Client;
 use serde::Deserialize;
@@ -48,36 +51,13 @@ pub enum ShredditError {
     RateLimited,
 }
 
-#[derive(Debug, Deserialize)]
-pub enum Thing {
-    Post(Post),
-    Comment(Comment),
-    Friend(Friend),
-}
-
-#[async_trait]
-impl Shred for Thing {
-    async fn delete(&self, client: &Client, access_token: &str, config: &Config) {
-        match self {
-            Self::Post(post) => post.delete(client, access_token, config).await,
-            Self::Comment(comment) => comment.delete(client, access_token, config).await,
-            Self::Friend(friend) => friend.delete(client, access_token, config).await,
-        };
-    }
-
-    async fn edit(&self, client: &Client, access_token: &str, config: &Config) {
-        if let Self::Comment(comment) = self {
-            comment.delete(client, access_token, config).await
-        }
-    }
-}
-
 #[derive(Debug, Deserialize, PartialEq, Clone, ValueEnum)]
 pub enum ThingType {
     Posts,
     Comments,
     Friends,
     SavedPosts,
+    SavedComments,
 }
 
 impl FromStr for ThingType {
@@ -89,6 +69,7 @@ impl FromStr for ThingType {
             "comments" => Ok(Self::Comments),
             "friends" => Ok(Self::Friends),
             "saved-posts" => Ok(Self::SavedPosts),
+            "saved-comments" => Ok(Self::SavedComments),
             _ => Err("Invalid type"),
         }
     }

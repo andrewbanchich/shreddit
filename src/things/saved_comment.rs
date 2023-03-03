@@ -15,21 +15,21 @@ use super::Shred;
 
 #[allow(unused)]
 #[derive(Debug, Deserialize)]
-pub struct SavedPost {
+pub struct SavedComment {
     id: String,
     permalink: String,
 }
 
-impl Gdpr for SavedPost {
-    const FILENAME: &'static str = "saved_posts.csv";
+impl Gdpr for SavedComment {
+    const FILENAME: &'static str = "saved_comments.csv";
 }
 
-impl Api for SavedPost {
-    const TYPE_ID: &'static str = "t3";
+impl Api for SavedComment {
+    const TYPE_ID: &'static str = "t1";
 }
 
 #[async_trait]
-impl Shred for SavedPost {
+impl Shred for SavedComment {
     #[instrument(level = "info", skip(client, access_token))]
     async fn delete(&self, client: &Client, access_token: &str, config: &Config) {
         info!("Deleting...");
