@@ -48,6 +48,7 @@ static LOREM_IPSUM: &str = "Lorem ipsum dolor sit amet, consectetur adipiscing e
 
 #[derive(Debug)]
 pub enum ShredditError {
+    #[allow(dead_code)]
     RateLimited,
 }
 

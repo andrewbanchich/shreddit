@@ -1,6 +1,7 @@
 use crate::cli::Config;
 use reqwest::Client;
 use serde::Deserialize;
+use serde_json::Value;
 use std::collections::HashMap;
 
 pub async fn new_access_token(args: &Config, client: &Client) -> Result<String, String> {
@@ -24,6 +25,7 @@ pub async fn new_access_token(args: &Config, client: &Client) -> Result<String, 
     match res {
         AccessTokenResponse::Success { access_token } => Ok(access_token),
         AccessTokenResponse::Error { message, .. } => Err(message),
+        AccessTokenResponse::Unexpected(json) => Err(serde_json::to_string(&json).unwrap()),
     }
 }
 
@@ -38,4 +40,5 @@ enum AccessTokenResponse {
         error: String,
         message: String,
     },
+    Unexpected(Value),
 }
