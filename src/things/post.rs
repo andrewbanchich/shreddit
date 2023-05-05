@@ -133,12 +133,13 @@ impl Shred for Post {
 }
 
 /// https://www.reddit.com/dev/api/#GET_user_{username}_submitted
-#[instrument(level = "info", skip(client, username))]
-pub async fn list(client: &Client, username: &str) -> impl Stream<Item = Post> {
+#[instrument(level = "info", skip_all)]
+pub async fn list(client: &Client, config: &Config) -> impl Stream<Item = Post> {
     info!("Fetching posts...");
 
-    let username = username.to_owned();
     let client = client.clone();
+    let username = config.username.clone();
+    let user_agent = config.user_agent.clone();
 
     stream! {
     let mut last_seen = None;
@@ -154,6 +155,7 @@ pub async fn list(client: &Client, username: &str) -> impl Stream<Item = Post> {
 
             let res: PostRes = client
         .get(&uri)
+        .header("User-Agent", user_agent.clone())
         .send()
         .await
         .unwrap()

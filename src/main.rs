@@ -94,7 +94,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
                 match thing_type {
                     ThingType::Posts => {
-                        let posts = post::list(&client, &config.username).await;
+                        let posts = post::list(&client, &config).await;
                         pin_mut!(posts);
 
                         while let Some(post) = posts.next().await {
@@ -103,7 +103,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     }
 
                     ThingType::Comments => {
-                        let comments = comment::list(&client, &config.username).await;
+                        let comments = comment::list(&client, &config).await;
                         pin_mut!(comments);
 
                         while let Some(comment) = comments.next().await {
