@@ -56,6 +56,7 @@ impl Shred for SavedComment {
             .post("https://oauth.reddit.com/api/unsave")
             .headers(headers)
             .form(&params)
+            .header("User-Agent", config.user_agent.clone())
             .send()
             .await
             .unwrap();

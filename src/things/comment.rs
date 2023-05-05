@@ -79,6 +79,7 @@ impl Shred for Comment {
             .post("https://oauth.reddit.com/api/del")
             .headers(headers)
             .form(&params)
+            .header("User-Agent", config.user_agent.clone())
             .send()
             .await
             .unwrap();
@@ -255,12 +256,13 @@ impl Comment {
 }
 
 /// https://www.reddit.com/dev/api/#GET_user_{username}_submitted
-#[instrument(level = "info", skip(client, username))]
-pub async fn list(client: &Client, username: &str) -> impl Stream<Item = Comment> {
+#[instrument(level = "info", skip_all)]
+pub async fn list(client: &Client, config: &Config) -> impl Stream<Item = Comment> {
     info!("Fetching comments...");
 
-    let username = username.to_owned();
+    let username = config.username.to_owned();
     let client = client.clone();
+    let user_agent = config.user_agent.clone();
 
     stream! {
     let mut last_seen = None;
@@ -276,6 +278,7 @@ pub async fn list(client: &Client, username: &str) -> impl Stream<Item = Comment
 
             let res: Response = client
         .get(&uri)
+        .header("User-Agent", user_agent.clone())
         .send()
         .await
         .unwrap()

@@ -15,6 +15,7 @@ pub async fn new_access_token(args: &Config, client: &Client) -> Result<String, 
         .post("https://www.reddit.com/api/v1/access_token")
         .form(&params)
         .basic_auth(&args.client_id, Some(&args.client_secret))
+        .header("User-Agent", args.user_agent.clone())
         .send()
         .await
         .unwrap()
