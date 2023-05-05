@@ -29,7 +29,7 @@ version-resolver:
       - 'bug'
       - 'chore'
   default: patch
-exclude-labels: ignore
+exclude-labels: ['ignore']
 template: |
   ## Changes
 
