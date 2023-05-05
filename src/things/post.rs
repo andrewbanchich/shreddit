@@ -14,11 +14,19 @@ use std::{collections::HashMap, time::Duration};
 use tokio::time::sleep;
 use tracing::{debug, error, info, instrument};
 
-#[allow(unused)]
+#[derive(Debug, Deserialize)]
+pub struct PostData {
+    data: Post,
+    #[allow(dead_code)]
+    kind: String,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Post {
     id: String,
+    #[allow(dead_code)]
     permalink: String,
+    #[allow(dead_code)]
     title: String,
     #[serde(flatten)]
     source: Source,
@@ -29,9 +37,10 @@ pub struct Post {
 #[serde(untagged)]
 enum Source {
     Api {
+        can_gild: bool,
+        created_utc: f32,
         selftext: String,
         score: i64,
-        created_utc: f32,
     },
 
     // GDPR cols
@@ -98,7 +107,7 @@ impl Post {
 
 #[async_trait]
 impl Shred for Post {
-    #[instrument(level = "info", skip(self, client, access_token))]
+    #[instrument(level = "info", skip(client, access_token))]
     async fn delete(&self, client: &Client, access_token: &str, config: &Config) {
         info!("Deleting...");
 
@@ -164,7 +173,7 @@ pub async fn list(client: &Client, config: &Config) -> impl Stream<Item = Post> 
         .unwrap();
 
     match res {
-        PostRes::Success { data} => {
+        PostRes::Success { data } => {
 
     let results_len = data.children.len();
 
@@ -173,15 +182,15 @@ pub async fn list(client: &Client, config: &Config) -> impl Stream<Item = Post> 
     if results_len == 0 {
                 break;
     } else {
-                last_seen = data.children.last().map(|t| t.fullname());
+                last_seen = data.children.last().map(|t| t.data.fullname());
     }
 
     for comment in data.children {
-                yield comment;
+                yield comment.data;
     }
         }
         PostRes::Error(e) => {
-    error!("{e}:#?");
+    error!("{e:#?}");
     break
         }
 
@@ -200,5 +209,5 @@ enum PostRes {
 
 #[derive(Debug, Deserialize)]
 pub struct PostResData {
-    pub children: Vec<Post>,
+    pub children: Vec<PostData>,
 }
