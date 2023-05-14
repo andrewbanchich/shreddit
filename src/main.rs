@@ -6,7 +6,7 @@ use cli::Config;
 use futures_util::{pin_mut, StreamExt};
 use reqwest::Client;
 use things::Shred;
-use tracing::{error, info};
+use tracing::{debug, error, info};
 use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 use crate::{
@@ -21,11 +21,18 @@ mod things;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
-    dotenv::from_filename("shreddit.env").ok();
-
+    let config_file = dotenv::from_filename("shreddit.env").ok();
     let config = Config::parse();
 
     init_tracing();
+
+    match config_file {
+        Some(p) => debug!(
+            "Loaded environment variables from file: {}",
+            p.to_string_lossy()
+        ),
+        None => debug!("No shreddit.env config file found."),
+    }
 
     let client = Client::new();
     let access_token = match new_access_token(&config, &client).await {
