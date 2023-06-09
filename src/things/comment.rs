@@ -65,7 +65,7 @@ impl Shred for Comment {
             return;
         }
 
-        if (config.prevent_comment_deletion){
+        if config.prevent_comment_deletion {
             debug!("Skipping DELETION due to `prevent_comment_deletion` filter ({})", config.prevent_comment_deletion);
         }
 
