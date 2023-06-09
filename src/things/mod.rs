@@ -30,6 +30,21 @@ pub trait Shred {
     async fn shred(&self, client: &Client, access_token: &str, config: &Config) {
         self.edit(client, access_token, config).await;
         self.delete(client, access_token, config).await;
+        prevent_rate_limit().await;
+    }
+}
+
+// Reddit has a rate limit - Sleep every so often
+const sleep_time = 1
+const max_api_calls_per_second = 10;
+static current_api_calls = 0;
+
+static async fn prevent_rate_limit() {
+    current_api_calls += 1
+    if current_api_calls >= max_api_calls_per_second {
+        debug!("Sleeping for {} seconds to prevent rate limiting", sleep_time);
+        sleep(Duration::from_secs(sleep_time)).await; 
+        current_api_calls = 0;
     }
 }
 

@@ -64,7 +64,5 @@ impl Shred for SavedComment {
         if !res.status().is_success() {
             error!("{:#?}", res.status());
         }
-
-        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
     }
 }

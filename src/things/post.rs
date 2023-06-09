@@ -136,8 +136,6 @@ impl Shred for Post {
             .send()
             .await
             .unwrap();
-
-        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
     }
 }
 

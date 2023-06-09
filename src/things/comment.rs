@@ -87,8 +87,6 @@ impl Shred for Comment {
             .send()
             .await
             .unwrap();
-
-        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
     }
 
     #[instrument(level = "debug", skip(client, access_token))]
@@ -175,8 +173,6 @@ impl Shred for Comment {
                 }
             },
         };
-
-        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
     }
 }
 
