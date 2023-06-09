@@ -38,6 +38,10 @@ pub struct Config {
 
     #[clap(long, env = "SHREDDIT_MAX_SCORE")]
     pub max_score: Option<i64>,
+    
+    /// Allows a user to specify a custom string as their comment replacement text
+    #[clap(short, long, env = "SHREDDIT_REPLACEMENT_COMMENT")]
+    pub comment_replacement_text: string
 
     /// The User-Agent for Reddit API requests.
     #[clap(
