@@ -40,8 +40,12 @@ pub struct Config {
     pub max_score: Option<i64>,
     
     /// Allows a user to specify a custom string as their comment replacement text
-    #[clap(short, long, env = "SHREDDIT_REPLACEMENT_COMMENT")]
-    pub comment_replacement_text: string
+    #[clap(short, long, env = "SHREDDIT_REPLACEMENT_COMMENT", default_value = "")]
+    pub replacement_comment: String,
+
+    /// If specified, comments will only be edited, not deleted.
+    #[clap(short, long, env = "SHREDDIT_PREVENT_COMMENT_DELETION", default_value = false)]
+    pub prevent_comment_deletion: bool,
 
     /// The User-Agent for Reddit API requests.
     #[clap(

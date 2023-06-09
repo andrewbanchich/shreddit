@@ -65,6 +65,10 @@ impl Shred for Comment {
             return;
         }
 
+        if (config.prevent_comment_deletion){
+            debug!("Skipping DELETION due to `prevent_comment_deletion` filter ({})", config.prevent_comment_deletion);
+        }
+
         let mut headers = HeaderMap::new();
         headers.insert(
             "Authorization",
@@ -114,10 +118,12 @@ impl Shred for Comment {
         );
 
         headers.insert("User-Agent", config.user_agent.parse().unwrap());
+        
+        let new_comment_text = if config.replacement_comment.is_empty() {LOREM_IPSUM.to_string()} else {config.replacement_comment};
 
         let params = HashMap::from([
             ("thing_id", self.fullname()),
-            ("text", LOREM_IPSUM.to_string()),
+            ("text", new_comment_text),
         ]);
 
         let res: EditResponse = client
