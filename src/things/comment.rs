@@ -173,6 +173,8 @@ impl Shred for Comment {
                 }
             },
         };
+
+        self.prevent_rate_limit().await;
     }
 }
 
