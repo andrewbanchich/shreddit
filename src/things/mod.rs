@@ -26,7 +26,7 @@ use async_trait::async_trait;
 // Reddit has a new rate limit as of 7/1/2023:
 // OAuth for authentication: 100 queries per minute per OAuth client id - sleep minimum of 0.6s after every call
 // not using OAuth for authentication: 10 queries per minute - must sleep 7s between calls
-const sleep_time = 0.7
+const sleep_time = 0.7;
 
 #[async_trait]
 pub trait Shred {
