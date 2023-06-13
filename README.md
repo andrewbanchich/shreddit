@@ -67,10 +67,6 @@ Options:
       --replacement_comment<REPLACEMENT_CMMENT>
           This allows you to customize the text every comment will be edited into prior to deletion.
           [env: SHREDDIT_REPLACEMENT_COMMENT="Long Live 3rd Party Apps!"]
-      --prevent_comment_deletion
-           If specified, comments will only be edited, not deleted. (When false, comments will be deleted, which was normal prior to introduction of this variable)
-           [env = "SHREDDIT_PREVENT_COMMENT_DELETION", default_value = false)]
-    pub prevent_comment_deletion: bool,
   -h, --help
           Print help
   -V, --version
