@@ -1,9 +1,8 @@
-use std::{collections::HashMap, time::Duration};
+use std::{collections::HashMap};
 
 use async_trait::async_trait;
 use reqwest::{header::HeaderMap, Client};
 use serde::Deserialize;
-use tokio::time::sleep;
 use tracing::{error, info, instrument};
 
 use crate::{

@@ -10,8 +10,7 @@ use futures_core::Stream;
 use reqwest::{header::HeaderMap, Client};
 use serde::Deserialize;
 use serde_json::Value;
-use std::{collections::HashMap, time::Duration};
-use tokio::time::sleep;
+use std::{collections::HashMap};
 use tracing::{debug, error, info, instrument};
 
 #[derive(Debug, Deserialize)]

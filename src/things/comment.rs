@@ -11,8 +11,7 @@ use futures_core::Stream;
 use reqwest::{header::HeaderMap, Client};
 use serde::Deserialize;
 use serde_json::Value;
-use std::{collections::HashMap, time::Duration};
-use tokio::time::sleep;
+use std::{collections::HashMap};
 use tracing::{debug, error, info, instrument};
 
 #[allow(unused)]
@@ -113,7 +112,7 @@ impl Shred for Comment {
 
         headers.insert("User-Agent", config.user_agent.parse().unwrap());
         
-        let new_comment_text = if config.replacement_comment.is_empty() {LOREM_IPSUM.to_string()} else {config.replacement_comment};
+        let new_comment_text = if config.replacement_comment.is_empty() {LOREM_IPSUM.to_string()} else {config.replacement_comment.to_string()};
 
         let params = HashMap::from([
             ("thing_id", self.fullname()),
