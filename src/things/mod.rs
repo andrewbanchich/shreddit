@@ -23,7 +23,6 @@ use tracing::instrument;
 use crate::cli::Config;
 use async_trait::async_trait;
 
-
 #[async_trait]
 pub trait Shred {
     async fn delete(&self, client: &Client, access_token: &str, config: &Config);
