@@ -18,9 +18,11 @@ use reqwest::Client;
 use serde::Deserialize;
 use std::{fmt::Debug, str::FromStr, time::Duration};
 use tokio::time::sleep;
+use tracing::{instrument};
+
 use crate::cli::Config;
 use async_trait::async_trait;
-use tracing::{instrument};
+
 
 #[async_trait]
 pub trait Shred {
@@ -39,6 +41,7 @@ where
 {
     thing.edit(client, access_token, config).await;
     sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
+    
     thing.delete(client, access_token, config).await;
 }
 
