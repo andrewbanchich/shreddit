@@ -10,7 +10,8 @@ use futures_core::Stream;
 use reqwest::{header::HeaderMap, Client};
 use serde::Deserialize;
 use serde_json::Value;
-use std::{collections::HashMap};
+use std::{collections::HashMap, time::Duration};
+use tokio::time::sleep;
 use tracing::{debug, error, info, instrument};
 
 #[derive(Debug, Deserialize)]
@@ -135,6 +136,8 @@ impl Shred for Post {
             .send()
             .await
             .unwrap();
+
+        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
     }
 }
 

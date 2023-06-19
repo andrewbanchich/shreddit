@@ -1,4 +1,5 @@
-use std::{collections::HashMap};
+use std::{collections::HashMap, time::Duration};
+use tokio::time::sleep;
 
 use async_trait::async_trait;
 use reqwest::{header::HeaderMap, Client};
@@ -63,5 +64,7 @@ impl Shred for SavedComment {
         if !res.status().is_success() {
             error!("{:#?}", res.status());
         }
+
+        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
     }
 }

@@ -11,7 +11,8 @@ use futures_core::Stream;
 use reqwest::{header::HeaderMap, Client};
 use serde::Deserialize;
 use serde_json::Value;
-use std::{collections::HashMap};
+use std::{collections::HashMap, time::Duration};
+use tokio::time::sleep;
 use tracing::{debug, error, info, instrument};
 
 #[allow(unused)]
@@ -82,6 +83,8 @@ impl Shred for Comment {
             .send()
             .await
             .unwrap();
+
+        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
     }
 
     #[instrument(level = "debug", skip(client, access_token))]
@@ -169,7 +172,7 @@ impl Shred for Comment {
             },
         };
 
-        self.prevent_rate_limit().await;
+        sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
     }
 }
 
