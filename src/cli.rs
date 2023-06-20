@@ -52,4 +52,8 @@ pub struct Config {
     /// Reddit's APIs for discovering your data.
     #[clap(long, env = "SHREDDIT_GDPR_EXPORT_DIR")]
     pub gdpr_export_dir: Option<PathBuf>,
+
+    /// If specified, comments will only be edited, not deleted. - Requires gdpr_export
+    #[clap(long, env = "SHREDDIT_PREVENT_COMMENT_DELETION")]
+    pub prevent_comment_deletion: bool,
 }

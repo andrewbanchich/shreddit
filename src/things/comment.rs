@@ -61,6 +61,19 @@ impl Shred for Comment {
             return;
         }
 
+        if config.prevent_comment_deletion {
+            debug!("Skipping DELETION due to `prevent_comment_deletion` filter ({})", config.prevent_comment_deletion);
+            match &config.gdpr_export_dir {
+                Some(_) => {}
+                None => {
+                    // #35 must be fixed prior to removing this disclaimer. But that has to do with Reddit's JSON functionality.
+                    // Only 34 pages of json comments can be requested. Older comments become available after newer are deleted.
+                    info!(" !! You are not using a gdpr_export_dir - prevent_comment_deletion function is only available for recent comments");
+                }
+            }
+            return;
+        }
+
         if config.dry_run {
             return;
         }
