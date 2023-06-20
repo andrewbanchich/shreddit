@@ -23,10 +23,22 @@ use tracing::instrument;
 use crate::cli::Config;
 use async_trait::async_trait;
 
+// Reddit has a new rate limit as of 7/1/2023:
+// OAuth for authentication: 100 queries per minute per OAuth client id - sleep atleast 0.6s after every call ( 650 ms)
+// not using OAuth for authentication: 10 queries per minute - must sleep atleast 6s between calls ( 6500 ms)
+const SLEEP_TIME:u64 = 650;
+const SLEEP_DUR:Duration = Duration::from_millis(SLEEP_TIME);
+pub async fn prevent_rate_limit() { 
+    println!("\n -- Sleeping for {SLEEP_TIME}ms to prevent rate limiting...\n");
+    sleep(SLEEP_DUR).await;
+}
+
+
 #[async_trait]
 pub trait Shred {
     async fn delete(&self, client: &Client, access_token: &str, config: &Config);
     async fn edit(&self, _client: &Client, _access_token: &str, _config: &Config) {}
+    async fn prevent_rate_limit(&self) { prevent_rate_limit().await; }
     async fn shred(&self, client: &Client, access_token: &str, config: &Config) {
         self.edit(client, access_token, config).await;
         self.delete(client, access_token, config).await;
@@ -39,7 +51,7 @@ where
     T: Shred + Sync + Debug,
 {
     thing.edit(client, access_token, config).await;
-    sleep(Duration::from_secs(2)).await; // Reddit has a rate limit
+    prevent_rate_limit().await;
 
     thing.delete(client, access_token, config).await;
 }
