@@ -1,9 +1,12 @@
 use std::collections::HashMap;
 
+use async_stream::stream;
 use async_trait::async_trait;
+use futures_core::Stream;
 use reqwest::{header::HeaderMap, Client};
 use serde::Deserialize;
-use tracing::{error, info, instrument};
+use serde_json::Value;
+use tracing::{debug, error, info, instrument};
 
 use crate::{
     cli::Config,
@@ -12,11 +15,24 @@ use crate::{
 
 use super::Shred;
 
-#[allow(unused)]
+#[derive(Debug, Deserialize)]
+pub struct SavedPostData {
+    data: SavedPost,
+    #[allow(dead_code)]
+    kind: String,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct SavedPost {
     id: String,
+    #[allow(dead_code)]
     permalink: String,
+}
+
+impl SavedPost {
+    fn fullname(&self) -> String {
+        format!("{}_{}", Self::TYPE_ID, self.id)
+    }
 }
 
 impl Gdpr for SavedPost {
@@ -66,4 +82,86 @@ impl Shred for SavedPost {
 
         self.prevent_rate_limit().await;
     }
+}
+
+/// https://www.reddit.com/dev/api/#GET_user_{username}_saved
+#[instrument(level = "info", skip_all)]
+pub async fn list(
+    client: &Client,
+    access_token: &str,
+    config: &Config,
+) -> impl Stream<Item = SavedPost> {
+    info!("Fetching posts...");
+
+    let client = client.clone();
+    let username = config.username.clone();
+    let user_agent = config.user_agent.clone();
+    let mut headers = HeaderMap::new();
+    headers.insert(
+        "Authorization",
+        format!("Bearer {access_token}").parse().unwrap(),
+    );
+
+    headers.insert("User-Agent", user_agent.parse().unwrap());
+
+    stream! {
+    let mut last_seen = None;
+
+        loop {
+    let query_params = if let Some(last_seen) = last_seen {
+        format!("&after={last_seen}")
+    } else {
+        String::new()
+    };
+
+    let uri = format!("https://oauth.reddit.com/user/{username}/saved.json?&type=links{query_params}");
+
+            let res: SavedPostRes = client
+        .get(&uri)
+        .headers(headers.clone())
+        .send()
+        .await
+        .unwrap()
+        .json()
+        .await
+        .unwrap();
+
+    match res {
+        SavedPostRes::Success { data } => {
+
+    let results_len = data.children.len();
+
+    debug!("Page contained {results_len} results");
+
+    if results_len == 0 {
+                break;
+    } else {
+                last_seen = data.children.last().map(|t| t.data.fullname());
+    }
+
+    for comment in data.children {
+                yield comment.data;
+    }
+        }
+        SavedPostRes::Error(e) => {
+    error!("{e:#?}");
+    break
+        }
+
+    }
+
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+enum SavedPostRes {
+    Success { data: SavedPostResData },
+    Error(Value),
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SavedPostResData {
+    pub children: Vec<SavedPostData>,
 }
