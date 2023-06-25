@@ -2,7 +2,6 @@ use super::Shred;
 use crate::{
     cli::Config,
     sources::{api::Api, gdpr::Gdpr},
-    things::LOREM_IPSUM,
 };
 use async_stream::stream;
 use async_trait::async_trait;
@@ -112,7 +111,7 @@ impl Shred for Comment {
 
         let params = HashMap::from([
             ("thing_id", self.fullname()),
-            ("text", LOREM_IPSUM.to_string()),
+            ("text", config.replacement_comment.to_string()),
         ]);
 
         let res: EditResponse = client
