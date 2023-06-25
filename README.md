@@ -79,7 +79,6 @@ Options:
       --edit_only
            When set 'true', no items will be deleted. Items (comments) will still be modified though.
            [env = SHREDDIT_EDIT_ONLY=true/false, default_value = false]
-    pub prevent_comment_deletion: bool,
   -h, --help
           Print help
   -V, --version
