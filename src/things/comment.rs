@@ -1,4 +1,4 @@
-use super::Shred;
+use super::{Shred, ShredditError};
 use crate::{
     cli::Config,
     sources::{api::Api, gdpr::Gdpr},
@@ -147,7 +147,10 @@ impl Shred for Comment {
                     }
                 }
                 Source::Gdpr { .. } => {
-                    let comment = self.to_api(client, access_token, config).await;
+                    let Ok(comment) = self.to_api(client, access_token, config).await else {
+			return
+		    };
+
                     match comment.source {
                         Source::Api { can_gild, .. } => {
                             if !can_gild {
@@ -213,7 +216,12 @@ impl Comment {
         false
     }
 
-    async fn to_api(&self, client: &Client, access_token: &str, config: &Config) -> Self {
+    async fn to_api(
+        &self,
+        client: &Client,
+        access_token: &str,
+        config: &Config,
+    ) -> Result<Self, ShredditError> {
         debug!("Getting comment from API...");
 
         let mut headers = HeaderMap::new();
@@ -240,10 +248,10 @@ impl Comment {
             .unwrap();
 
         match res {
-            Response::Success { data } => data.children.into_iter().next().unwrap().data,
+            Response::Success { data } => Ok(data.children.into_iter().next().unwrap().data),
             Response::Error(e) => {
-                error!("{e:#?}");
-                todo!();
+                error!("Couldn't get comment from API: {e:#?}");
+                Err(ShredditError::Unknown)
             }
         }
     }
