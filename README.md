@@ -76,9 +76,9 @@ Options:
           The User-Agent for Reddit API requests [env: SHREDDIT_USER_AGENT=ShredditRustClient] [default: ShredditRustClient]
       --gdpr-export-dir <GDPR_EXPORT_DIR>
           The path of the directory of the unzipped GDPR export data. If set, `shreddit` will use the GDPR export folder instead of Reddit's APIs for discovering your data [env: SHREDDIT_GDPR_EXPORT_DIR=/home/you/Downloads/export_yourusername_20230101]
-      --prevent_comment_deletion
+      --edit_only
            If specified, comments will only be edited, not deleted. (When false, comments will be deleted, which was normal prior to introduction of this variable)
-           [env = SHREDDIT_PREVENT_COMMENT_DELETION=true/false, default_value = false]
+           [env = SHREDDIT_EDIT_ONLY=true/false, default_value = false]
     pub prevent_comment_deletion: bool,
   -h, --help
           Print help
