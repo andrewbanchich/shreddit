@@ -63,6 +63,7 @@ pub static LOREM_IPSUM: &str = "Lorem ipsum dolor sit amet, consectetur adipisci
 pub enum ShredditError {
     #[allow(dead_code)]
     RateLimited,
+    Unknown,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Clone, ValueEnum)]

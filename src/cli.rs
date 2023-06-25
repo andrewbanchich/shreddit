@@ -79,6 +79,6 @@ impl Config {
         } else if self.dry_run {
             debug!("Skipping DELETION due to 'dry run' filter");
         }
-        return self.edit_only | self.dry_run;
+        self.edit_only | self.dry_run
     }
 }
