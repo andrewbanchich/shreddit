@@ -57,28 +57,29 @@ Usage: shreddit [OPTIONS] --username <USERNAME> --password <PASSWORD> --client-i
 
 Options:
   -u, --username <USERNAME>
-          Your Reddit username [env: SHREDDIT_USERNAME=your_username]
+          Your Reddit username [env: SHREDDIT_USERNAME=]
   -p, --password <PASSWORD>
-          Your Reddit password [env: SHREDDIT_PASSWORD=SuperSecretPassword123]
+          Your Reddit password [env: SHREDDIT_PASSWORD=]
       --client-id <CLIENT_ID>
-          To create client credentials, you need to navigate to `https://www.reddit.com/prefs/apps/`, click `create another app...` and fill out the form. Select the `script` type, and set `redirect uri` as `http://localhost:8080` [env: SHREDDIT_CLIENT_ID=lk4j56lkj3lk4j5656]
+          To create client credentials, you need to navigate to `https://www.reddit.com/prefs/apps/`, click `create another app...` and fill out the form. Select the `script` type, and set `redirect uri` as `http://localhost:8080` [env: SHREDDIT_CLIENT_ID=]
       --client-secret <CLIENT_SECRET>
-          The client secret from when you created client credentials [env: SHREDDIT_CLIENT_SECRET=kl2kj3KJ345lkhRAWE]
+          The client secret from when you created client credentials [env: SHREDDIT_CLIENT_SECRET=]
       --dry-run
-          If set, shreddit will not modify or delete anything. It will simply log what it would do if not in dry run mode. This allows you to preview the plan of action before executing [env: SHREDDIT_DRY_RUN=false]
+          If set, shreddit will not modify or delete anything. It will simply log what it would do if not in dry run mode. This allows you to preview the plan of action before executing [env: SHREDDIT_DRY_RUN=]
       --thing-types <THING_TYPES>
-          What "things" you want to delete [env: SHREDDIT_THING_TYPES=posts,comments] [default: posts comments] [possible values: posts, comments, friends]
+          What "things" you want to delete [env: SHREDDIT_THING_TYPES=] [default: posts comments] [possible values: posts, comments, friends, saved-posts, saved-comments]
       --before <BEFORE>
-          [env: SHREDDIT_BEFORE=2023-01-01T00:00:00Z] [default: "2023-03-02 17:49:30.225134209 UTC"]
+          [env: SHREDDIT_BEFORE=] [default: "2023-06-25 03:57:45.521916818 UTC"]
       --max-score <MAX_SCORE>
-          [env: SHREDDIT_MAX_SCORE=100]
+          [env: SHREDDIT_MAX_SCORE=]
+  -r, --replacement-comment <REPLACEMENT_COMMENT>
+          Allows a user to specify a custom string as their comment replacement text [env: SHREDDIT_REPLACEMENT_COMMENT=] [default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."]
       --user-agent <USER_AGENT>
-          The User-Agent for Reddit API requests [env: SHREDDIT_USER_AGENT=ShredditRustClient] [default: ShredditRustClient]
+          The User-Agent for Reddit API requests [env: SHREDDIT_USER_AGENT=] [default: ShredditRustClient]
       --gdpr-export-dir <GDPR_EXPORT_DIR>
-          The path of the directory of the unzipped GDPR export data. If set, `shreddit` will use the GDPR export folder instead of Reddit's APIs for discovering your data [env: SHREDDIT_GDPR_EXPORT_DIR=/home/you/Downloads/export_yourusername_20230101]
-      --edit-only <EDIT_ONLY>
-           When set 'true', no items will be deleted. Items (comments) will still be modified though.
-           [env = SHREDDIT_EDIT_ONLY=true/false, default_value = false]
+          The path of the directory of the unzipped GDPR export data. If set, `shreddit` will use the GDPR export folder instead of Reddit's APIs for discovering your data [env: SHREDDIT_GDPR_EXPORT_DIR=]
+      --edit-only
+          If specified, comments will only be edited, not deleted. - Requires gdpr_export [env: SHREDDIT_EDIT_ONLY=]
   -h, --help
           Print help
   -V, --version
