@@ -1,4 +1,4 @@
-use crate::things::ThingType;
+use crate::things::{ThingType, LOREM_IPSUM};
 use chrono::{DateTime, Utc};
 use clap::Parser;
 use std::path::PathBuf;
@@ -38,9 +38,9 @@ pub struct Config {
 
     #[clap(long, env = "SHREDDIT_MAX_SCORE")]
     pub max_score: Option<i64>,
-    
+
     /// Allows a user to specify a custom string as their comment replacement text
-    #[clap(short, long, env = "SHREDDIT_REPLACEMENT_COMMENT", default_value = "")]
+    #[clap(short, long, env = "SHREDDIT_REPLACEMENT_COMMENT", default_value = LOREM_IPSUM)]
     pub replacement_comment: String,
 
     /// The User-Agent for Reddit API requests.
