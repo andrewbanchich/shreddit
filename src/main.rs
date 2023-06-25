@@ -11,7 +11,10 @@ use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt, Env
 
 use crate::{
     sources::gdpr,
-    things::{comment, post, Comment, Friend, Post, SavedComment, SavedPost, ThingType},
+    things::{
+        comment, post, saved_comment, saved_post, Comment, Friend, Post, SavedComment, SavedPost,
+        ThingType,
+    },
 };
 
 mod access_token;
@@ -124,13 +127,22 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     }
 
                     ThingType::SavedPosts => {
-                        error!("Shredding saved posts based on API is a TODO");
-                        todo!();
+                        let saved_posts = saved_post::list(&client, &access_token, &config).await;
+                        pin_mut!(saved_posts);
+
+                        while let Some(saved_post) = saved_posts.next().await {
+                            saved_post.shred(&client, &access_token, &config).await;
+                        }
                     }
 
                     ThingType::SavedComments => {
-                        error!("Shredding saved comments based on API is a TODO");
-                        todo!();
+                        let saved_comments =
+                            saved_comment::list(&client, &access_token, &config).await;
+                        pin_mut!(saved_comments);
+
+                        while let Some(saved_comment) = saved_comments.next().await {
+                            saved_comment.shred(&client, &access_token, &config).await;
+                        }
                     }
                 }
 
