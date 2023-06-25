@@ -38,6 +38,18 @@ Download the binary from the [GitHub Releases](https://github.com/andrewbanchich
 
 # How to use
 
+## Create Reddit app credentials
+
+1. Navigate to Reddit -> preferences -> apps (tab) and click `create another app...`
+2. Give the app a name, like 'shreddit`. The name doesn't matter.
+3. Select `script`.
+4. Set the redirect URL to be `http://localhost:8080`.
+5. Click `create app`.
+
+This will provide with a client ID and client secret. The `CLIENT_ID` value used by Shreddit is shown under the name of the app you created. The `CLIENT_SECRET` is shown after clicking `edit`.
+
+> IMPORTANT: If you are using TOTP, you will need to pass it in via the `PASSWORD` settings like `PASSWORD:TOTP`. It's currently a bit awkward to do since you need to do so before the token expires, so in the future we can add a CLI prompt to make this easier. In the meantime, you can just use the `--password` CLI argument, fill in `--password your-password:` and paste the TOTP after that and hit enter.
+
 ```
 Overwrite and delete your Reddit account history.
 
