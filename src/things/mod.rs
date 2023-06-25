@@ -26,7 +26,7 @@ use async_trait::async_trait;
 // Reddit has a new rate limit as of 7/1/2023:
 // OAuth for authentication: 100 queries per minute per OAuth client id - sleep atleast 0.6s after every call ( 650 ms)
 // not using OAuth for authentication: 10 queries per minute - must sleep atleast 6s between calls ( 6500 ms)
-const SLEEP_TIME: u64 = 650;
+const SLEEP_TIME: u64 = 2000; // 2s seems to be the magic number pre-7/1....
 const SLEEP_DUR: Duration = Duration::from_millis(SLEEP_TIME);
 pub async fn prevent_rate_limit() {
     debug!("Sleeping for {SLEEP_TIME}ms to prevent rate limiting.");
