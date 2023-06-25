@@ -18,7 +18,7 @@ use reqwest::Client;
 use serde::Deserialize;
 use std::{fmt::Debug, str::FromStr, time::Duration};
 use tokio::time::sleep;
-use tracing::instrument;
+use tracing::{debug, instrument};
 
 use crate::cli::Config;
 use async_trait::async_trait;
