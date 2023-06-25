@@ -38,7 +38,7 @@ impl Shred for SavedPost {
         //     return;
         // }
 
-        if config.dry_run {
+        if config.should_prevent_deletion() {
             return;
         }
 

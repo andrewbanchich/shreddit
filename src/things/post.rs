@@ -111,11 +111,7 @@ impl Shred for Post {
     async fn delete(&self, client: &Client, access_token: &str, config: &Config) {
         info!("Deleting...");
 
-        if self.should_skip(config) {
-            return;
-        }
-
-        if config.dry_run {
+        if self.should_skip(config) || config.should_prevent_deletion() {
             return;
         }
 
