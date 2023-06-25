@@ -29,7 +29,7 @@ use async_trait::async_trait;
 const SLEEP_TIME:u64 = 650;
 const SLEEP_DUR:Duration = Duration::from_millis(SLEEP_TIME);
 pub async fn prevent_rate_limit() { 
-    println!("\n -- Sleeping for {SLEEP_TIME}ms to prevent rate limiting...\n");
+    debug!("Sleeping for {SLEEP_TIME}ms to prevent rate limiting.");
     sleep(SLEEP_DUR).await;
 }
 
