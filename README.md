@@ -69,7 +69,7 @@ Options:
       --thing-types <THING_TYPES>
           What "things" you want to delete [env: SHREDDIT_THING_TYPES=] [default: posts comments] [possible values: posts, comments, friends, saved-posts, saved-comments]
       --before <BEFORE>
-          [env: SHREDDIT_BEFORE=] [default: "2023-06-25 03:57:45.521916818 UTC"]
+          [env: SHREDDIT_BEFORE=] [default: "2023-06-25 14:42:43.828192320 UTC"]
       --max-score <MAX_SCORE>
           [env: SHREDDIT_MAX_SCORE=]
   -r, --replacement-comment <REPLACEMENT_COMMENT>
