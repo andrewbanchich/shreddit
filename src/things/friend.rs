@@ -17,7 +17,7 @@ impl Shred for Friend {
     async fn delete(&self, client: &Client, access_token: &str, config: &Config) {
         info!("Deleting...");
 
-        if config.dry_run {
+        if config.should_prevent_deletion() {
             return;
         }
 
