@@ -2,6 +2,7 @@ use crate::things::{ThingType, LOREM_IPSUM};
 use chrono::{DateTime, Utc};
 use clap::Parser;
 use std::path::PathBuf;
+use tracing::{debug, warn};
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -56,4 +57,28 @@ pub struct Config {
     /// Reddit's APIs for discovering your data.
     #[clap(long, env = "SHREDDIT_GDPR_EXPORT_DIR")]
     pub gdpr_export_dir: Option<PathBuf>,
+
+    /// If specified, comments will only be edited, not deleted. - Requires gdpr_export
+    #[clap(long, env = "SHREDDIT_EDIT_ONLY")]
+    pub edit_only: bool,
+}
+
+impl Config {
+    /// Return TRUE if either edit_only or dr_run
+    pub fn should_prevent_deletion(&self) -> bool {
+        if self.edit_only {
+            debug!(
+                "Skipping DELETION due to `edit_only` filter ({})",
+                self.edit_only
+            );
+            if self.gdpr_export_dir.is_none() {
+                // As of this writing, there is an approx 1000 comment limit when pulling from JSON. Only reliable way to reach all data is via GDPR.
+                // See issue #35: https://github.com/andrewbanchich/shreddit/issues/35
+                warn!("Because you are not using a GDPR export, not all data will be reached.\nFor info on how to use a GDPR export, see: {}", r##"https://github.com/andrewbanchich/shreddit#delete-all-your-data-using-gdpr-export"##);
+            }
+        } else if self.dry_run {
+            debug!("Skipping DELETION due to 'dry run' filter");
+        }
+        return self.edit_only | self.dry_run;
+    }
 }
