@@ -41,7 +41,7 @@ impl Shred for Friend {
         } else {
             error!("Failed to delete");
         }
-        
+
         self.prevent_rate_limit().await;
     }
 }
