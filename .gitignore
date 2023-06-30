@@ -1,2 +1,4 @@
 /target
 shreddit.env
+# Direnv cache
+.direnv/

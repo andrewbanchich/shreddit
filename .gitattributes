@@ -1,0 +1,2 @@
+# Don't stress over lockfile changes
+*.lock binary
