@@ -248,7 +248,13 @@ impl Comment {
             .unwrap();
 
         match res {
-            Response::Success { data } => Ok(data.children.into_iter().next().unwrap().data),
+            Response::Success { data } => match data.children.into_iter().next() {
+                Some(c) => Ok(c.data),
+                None => {
+                    error!("Couldn't get comment from API: No data returned");
+                    Err(ShredditError::Unknown)
+                }
+            },
             Response::Error(e) => {
                 error!("Couldn't get comment from API: {e:#?}");
                 Err(ShredditError::Unknown)
