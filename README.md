@@ -41,6 +41,7 @@ Download the binary from the [GitHub Releases](https://github.com/andrewbanchich
 ## Create Reddit app credentials
 
 1. Navigate to Reddit -> preferences -> apps (tab) and click `create another app...`
+   - Access page directly at https://www.reddit.com/prefs/apps
 2. Give the app a name, like 'shreddit`. The name doesn't matter.
 3. Select `script`.
 4. Set the redirect URL to be `http://localhost:8080`.
