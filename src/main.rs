@@ -24,7 +24,7 @@ mod things;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let config_file = dotenv::from_filename("shreddit.env").ok();
+    let config_file = dotenvy::from_filename("shreddit.env").ok();
     let config = Config::parse();
 
     init_tracing();
