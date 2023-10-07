@@ -5,7 +5,7 @@ use crate::{
 };
 use async_stream::stream;
 use async_trait::async_trait;
-use chrono::{DateTime, NaiveDateTime, Utc};
+use chrono::{DateTime, NaiveDateTime, TimeZone, Utc};
 use futures_core::Stream;
 use reqwest::{header::HeaderMap, Client};
 use serde::Deserialize;
@@ -64,7 +64,7 @@ impl Post {
         match &self.source {
             Source::Api { created_utc, .. } => {
                 let dt = NaiveDateTime::from_timestamp_opt(*created_utc as i64, 0).unwrap();
-                DateTime::from_utc(dt, Utc)
+                Utc.from_utc_datetime(&dt)
             }
             Source::Gdpr { date, .. } => *date,
         }
