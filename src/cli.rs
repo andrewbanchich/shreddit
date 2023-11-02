@@ -55,6 +55,9 @@ pub struct Config {
     #[clap(long, env = "SHREDDIT_BEFORE", default_value_t = Utc::now(), value_parser = parse_before)]
     pub before: DateTime<Utc>,
 
+    #[clap(long, env = "SHREDDIT_AFTER")]
+    pub after: DateTime<Utc>,
+
     #[clap(long, env = "SHREDDIT_MAX_SCORE")]
     pub max_score: Option<i64>,
 

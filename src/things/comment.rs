@@ -7,7 +7,7 @@ use async_stream::stream;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use futures_core::Stream;
-use reqwest::{header::HeaderMap, Client};
+use reqwest::{Client, header::HeaderMap};
 use serde::Deserialize;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -142,7 +142,10 @@ impl Shred for Comment {
             EditResponse::Unexpected(v) => match self.source {
                 Source::Api { can_gild, .. } => {
                     if !can_gild {
-                        error!("Couldn't edit - comment was probably removed by a moderator (`can_gild` == {})", can_gild);
+                        error!(
+                            "Couldn't edit - comment was probably removed by a moderator (`can_gild` == {})",
+                            can_gild
+                        );
                     } else {
                         error!("Couldn't edit: {v:#?}");
                     }
@@ -155,7 +158,10 @@ impl Shred for Comment {
                     match comment.source {
                         Source::Api { can_gild, .. } => {
                             if !can_gild {
-                                error!("Couldn't edit - comment was probably removed by a moderator (`can_gild` == {})", can_gild);
+                                error!(
+                                    "Couldn't edit - comment was probably removed by a moderator (`can_gild` == {})",
+                                    can_gild
+                                );
                             } else {
                                 error!("Couldn't edit: {v:#?}");
                             }
@@ -217,11 +223,24 @@ impl Comment {
                         debug!("Skipping due to `max_score` filter ({max_score})");
                         return true;
                     }
+                } else if self.created() <= config.after {
+                    debug!("Skipping due to `after` filter ({})", config.after);
+                    return true;
                 }
             }
             Source::Gdpr { .. } => {
                 if config.max_score.is_some() {
                     error!("Cannot filter by max score when using GDPR data");
+                    return true;
+                }
+
+                if self.created() >= config.before {
+                    debug!("Skipping due to `before` filter ({})", config.before);
+                    return true;
+                }
+
+                if self.created() <= config.after {
+                    debug!("Skipping due to `after` filter ({})", config.after);
                     return true;
                 }
             }

@@ -71,6 +71,10 @@ Options:
           What "things" you want to delete [env: SHREDDIT_THING_TYPES=] [default: posts comments] [possible values: posts, comments, friends, saved-posts, saved-comments]
       --before <BEFORE>
           [env: SHREDDIT_BEFORE=] [default: "2025-03-03 07:24:13.673800 UTC"]
+          Don't alter things that were created before this date.
+      --after <AFTER>
+          Don't alter things that were created after this date.
+          [env: SHREDDIT_AFTER=] [2023-06-25 14:42:43.828192320 UTC]
       --max-score <MAX_SCORE>
           [env: SHREDDIT_MAX_SCORE=]
   -r, --replacement-comment <REPLACEMENT_COMMENT>
