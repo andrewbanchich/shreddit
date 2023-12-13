@@ -8,21 +8,21 @@ use tracing::{debug, warn};
 #[clap(author, version, about)]
 pub struct Config {
     /// Your Reddit username.
-    #[clap(short, long, env = "SHREDDIT_USERNAME")]
+    #[clap(short, long, env = "SHREDDIT_USERNAME", allow_hyphen_values = true)]
     pub username: String,
 
     /// Your Reddit password.
-    #[clap(short, long, env = "SHREDDIT_PASSWORD")]
+    #[clap(short, long, env = "SHREDDIT_PASSWORD", allow_hyphen_values = true)]
     pub password: String,
 
     /// To create client credentials, you need to navigate to `https://www.reddit.com/prefs/apps/`,
     /// click `create another app...` and fill out the form. Select the `script` type,
     /// and set `redirect uri` as `http://localhost:8080`.
-    #[clap(long, env = "SHREDDIT_CLIENT_ID")]
+    #[clap(long, env = "SHREDDIT_CLIENT_ID", allow_hyphen_values = true)]
     pub client_id: String,
 
     /// The client secret from when you created client credentials.
-    #[clap(long, env = "SHREDDIT_CLIENT_SECRET")]
+    #[clap(long, env = "SHREDDIT_CLIENT_SECRET", allow_hyphen_values = true)]
     pub client_secret: String,
 
     /// If set, shreddit will not modify or delete anything. It will simply log what it would do
@@ -41,7 +41,7 @@ pub struct Config {
     pub max_score: Option<i64>,
 
     /// Allows a user to specify a custom string as their comment replacement text
-    #[clap(short, long, env = "SHREDDIT_REPLACEMENT_COMMENT", default_value = LOREM_IPSUM)]
+    #[clap(short, long, env = "SHREDDIT_REPLACEMENT_COMMENT", default_value = LOREM_IPSUM, allow_hyphen_values = true)]
     pub replacement_comment: String,
 
     /// The User-Agent for Reddit API requests.
