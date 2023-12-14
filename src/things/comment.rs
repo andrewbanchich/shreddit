@@ -198,6 +198,9 @@ impl Comment {
                         debug!("Skipping due to `max_score` filter ({max_score})");
                         return true;
                     }
+                } else if self.created() <= config.after {
+                    debug!("Skipping due to `after` filter ({})", config.after);
+                    return true;
                 }
             }
             Source::Gdpr { .. } => {
@@ -208,6 +211,10 @@ impl Comment {
 
                 if self.created() >= config.before {
                     debug!("Skipping due to `before` filter ({})", config.before);
+                    return true;
+                }
+                if self.created() <= config.after {
+                    debug!("Skipping due to `after` filter ({})", config.after);
                     return true;
                 }
             }
