@@ -81,6 +81,8 @@ Options:
           The path of the directory of the unzipped GDPR export data. If set, `shreddit` will use the GDPR export folder instead of Reddit's APIs for discovering your data [env: SHREDDIT_GDPR_EXPORT_DIR=]
       --edit-only
           If specified, comments will only be edited, not deleted. - Requires gdpr_export [env: SHREDDIT_EDIT_ONLY=]
+      --skip-subreddits <SKIP_SUBREDDITS>
+          If specified, will skip these subreddits [env: SHREDDIT_SKIP_SUBREDDITS=]
   -h, --help
           Print help
   -V, --version
@@ -120,7 +122,7 @@ I'll be adding these as I go along. PRs are welcome!
 - [ ] Comment sorting
 - [ ] Clear vote - Remove your votes before deleting.
 - [x] Item - configure what kinds of items to delete (submissions, comments, etc.)
-- [ ] Subreddit whitelist - anything in given subreddits will not be deleted.
+- [x] Subreddit whitelist - anything in given subreddits will not be deleted.
 - [ ] Whitelist IDs - preserve specific posts by listing their IDs.
 - [ ] Preserve distinguished - Don't deleted distinguished comments.
 - [ ] Preserve gilded - Don't deleted gilded comments.

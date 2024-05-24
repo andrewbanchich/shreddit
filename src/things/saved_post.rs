@@ -25,6 +25,7 @@ pub struct SavedPostData {
 #[derive(Debug, Deserialize)]
 pub struct SavedPost {
     id: String,
+    subreddit: String,
     #[allow(dead_code)]
     permalink: String,
 }
@@ -48,6 +49,10 @@ impl Shred for SavedPost {
     #[instrument(level = "info", skip(client, access_token))]
     async fn delete(&self, client: &Client, access_token: &str, config: &Config) {
         info!("Deleting...");
+
+        if self.should_skip(config) {
+            return;
+        }
 
         if config.should_prevent_deletion() {
             return;
@@ -77,6 +82,18 @@ impl Shred for SavedPost {
         }
 
         self.prevent_rate_limit().await;
+    }
+}
+
+impl SavedPost {
+    fn should_skip(&self, config: &Config) -> bool {
+        if let Some(skip_subreddits) = &config.skip_subreddits {
+            if skip_subreddits.contains(&self.subreddit) {
+                debug!("Skipping due to `skip_subreddits` filter");
+                return true;
+            }
+        }
+        false
     }
 }
 

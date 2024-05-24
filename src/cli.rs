@@ -1,4 +1,4 @@
-use crate::things::{ThingType, LOREM_IPSUM};
+use crate::things::{SubredditSet, ThingType, LOREM_IPSUM};
 use chrono::{DateTime, Utc};
 use clap::Parser;
 use std::path::PathBuf;
@@ -61,6 +61,10 @@ pub struct Config {
     /// If specified, comments will only be edited, not deleted. - Requires gdpr_export
     #[clap(long, env = "SHREDDIT_EDIT_ONLY")]
     pub edit_only: bool,
+
+    /// If specified, will skip these subreddits
+    #[clap(long, env = "SHREDDIT_SKIP_SUBREDDITS")]
+    pub skip_subreddits: Option<SubredditSet>,
 }
 
 impl Config {
