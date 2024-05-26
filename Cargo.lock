@@ -892,7 +892,7 @@ dependencies = [
 
 [[package]]
 name = "shreddit"
-version = "0.9.1"
+version = "0.9.3"
 dependencies = [
  "async-stream",
  "async-trait",

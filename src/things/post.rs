@@ -27,6 +27,7 @@ pub struct Post {
     permalink: String,
     #[allow(dead_code)]
     title: String,
+    subreddit: String,
     #[serde(flatten)]
     source: Source,
 }
@@ -75,12 +76,20 @@ impl Post {
     }
 
     fn should_skip(&self, config: &Config) -> bool {
+        if let Some(skip_subreddits) = &config.skip_subreddits {
+            if skip_subreddits.contains(&self.subreddit) {
+                debug!("Skipping due to `skip_subreddits` filter");
+                return true;
+            }
+        }
+        if self.created() >= config.before {
+            debug!("Skipping due to `before` filter ({})", config.before);
+            return true;
+        }
+
         match &self.source {
             Source::Api { score, .. } => {
-                if self.created() >= config.before {
-                    debug!("Skipping due to `before` filter ({})", config.before);
-                    return true;
-                } else if let Some(max_score) = config.max_score {
+                if let Some(max_score) = config.max_score {
                     if *score > max_score {
                         debug!("Skipping due to `max_score` filter ({max_score})");
                         return true;
@@ -90,11 +99,6 @@ impl Post {
             Source::Gdpr { .. } => {
                 if config.max_score.is_some() {
                     error!("Cannot filter by max score when using GDPR data");
-                    return true;
-                }
-
-                if self.created() >= config.before {
-                    debug!("Skipping due to `before` filter ({})", config.before);
                     return true;
                 }
             }
