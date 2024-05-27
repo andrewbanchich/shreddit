@@ -76,6 +76,12 @@ impl Post {
     }
 
     fn should_skip(&self, config: &Config) -> bool {
+        if let Some(skip_post_ids) = &config.skip_post_ids {
+            if skip_post_ids.contains(&self.id) {
+                debug!("Skipping due to `skip_post_ids` filter");
+                return true;
+            }
+        }
         if let Some(skip_subreddits) = &config.skip_subreddits {
             if skip_subreddits.contains(&self.subreddit) {
                 debug!("Skipping due to `skip_subreddits` filter");

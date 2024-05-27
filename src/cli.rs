@@ -1,4 +1,4 @@
-use crate::things::{SubredditSet, ThingType, LOREM_IPSUM};
+use crate::things::{CommentIdSet, PostIdSet, SubredditSet, ThingType, LOREM_IPSUM};
 use chrono::{DateTime, Utc};
 use clap::Parser;
 use std::path::PathBuf;
@@ -65,6 +65,14 @@ pub struct Config {
     /// If specified, will skip these subreddits
     #[clap(long, env = "SHREDDIT_SKIP_SUBREDDITS")]
     pub skip_subreddits: Option<SubredditSet>,
+
+    /// If specified, will skip comments and saved comments with listed ids
+    #[clap(long, env = "SHREDDIT_SKIP_COMMENT_IDS")]
+    pub skip_comment_ids: Option<CommentIdSet>,
+
+    /// If specified, will skip posts and saved posts with listed ids
+    #[clap(long, env = "SHREDDIT_SKIP_POST_IDS")]
+    pub skip_post_ids: Option<PostIdSet>,
 }
 
 impl Config {

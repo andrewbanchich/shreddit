@@ -82,7 +82,11 @@ Options:
       --edit-only
           If specified, comments will only be edited, not deleted. - Requires gdpr_export [env: SHREDDIT_EDIT_ONLY=]
       --skip-subreddits <SKIP_SUBREDDITS>
-          If specified, will skip these subreddits [env: SHREDDIT_SKIP_SUBREDDITS=]
+          If specified, will skip these subreddits [env: SHREDDIT_SKIP_SUBREDDITS=] 
+      --skip-comment-ids <SKIP_COMMENT_IDS>
+          If specified, will skip comments and saved comments with listed ids [env: SHREDDIT_SKIP_COMMENT_IDS=]
+      --skip-post-ids <SKIP_POST_IDS>
+          If specified, will skip posts and saved posts with listed ids [env: SHREDDIT_SKIP_POST_IDS=]
   -h, --help
           Print help
   -V, --version
@@ -123,7 +127,7 @@ I'll be adding these as I go along. PRs are welcome!
 - [ ] Clear vote - Remove your votes before deleting.
 - [x] Item - configure what kinds of items to delete (submissions, comments, etc.)
 - [x] Subreddit whitelist - anything in given subreddits will not be deleted.
-- [ ] Whitelist IDs - preserve specific posts by listing their IDs.
+- [x] Whitelist IDs - preserve specific posts by listing their IDs.
 - [ ] Preserve distinguished - Don't deleted distinguished comments.
 - [ ] Preserve gilded - Don't deleted gilded comments.
 
