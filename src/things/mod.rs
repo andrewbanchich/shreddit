@@ -89,16 +89,16 @@ impl FromStr for ThingType {
     }
 }
 
+pub type SubredditSet = ShredditSet;
+pub type CommentIdSet = ShredditSet;
+pub type PostIdSet = ShredditSet;
+
 #[derive(Debug, Clone)]
 pub struct ShredditSet(HashSet<String>);
 
 impl std::convert::From<&str> for ShredditSet {
     fn from(s: &str) -> Self {
-        let mut subreddits = HashSet::<String>::new();
-        s.split(',').for_each(|f| {
-            subreddits.insert(f.to_owned());
-        });
-        ShredditSet(subreddits)
+        Self(s.split(',').map(Into::into).collect())
     }
 }
 
