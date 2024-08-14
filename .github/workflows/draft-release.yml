@@ -25,7 +25,7 @@ jobs:
 
     strategy:
       matrix:
-        platform: [ linux, mac-x86_64, mac-aarch64, windows ]
+        platform: [ linux, mac-x86_64, windows ]
         include:
          - platform: linux
            os: ubuntu-latest
@@ -34,10 +34,6 @@ jobs:
          - platform: mac-x86_64
            os: macos-13
            target: x86_64-apple-darwin
-
-         - platform: mac-aarch64
-           os: macos-latest
-           target: aarch64-apple-darwin
 
          - platform: windows
            os: windows-latest
