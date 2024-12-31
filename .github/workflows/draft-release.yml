@@ -1,58 +1,58 @@
-name: Draft Release
-on:
-  push:
-    branches:
-      - master
+# name: Draft Release
+# on:
+#   push:
+#     branches:
+#       - master
 
-jobs:
-  draft-release:
-    name: Draft Release
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    outputs:
-      version: ${{ steps.create_release.outputs.tag_name }}
+# jobs:
+#   draft-release:
+#     name: Draft Release
+#     runs-on: ubuntu-latest
+#     if: github.ref == 'refs/heads/master'
+#     outputs:
+#       version: ${{ steps.create_release.outputs.tag_name }}
 
-    steps:
-      - id: create_release
-        uses: release-drafter/release-drafter@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#     steps:
+#       - id: create_release
+#         uses: release-drafter/release-drafter@v5
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build:
-    name: build
-    runs-on: ${{ matrix.os }}
-    needs: [draft-release]
+#   build:
+#     name: build
+#     runs-on: ${{ matrix.os }}
+#     needs: [draft-release]
 
-    strategy:
-      matrix:
-        platform: [ linux, mac-x86_64, windows ]
-        include:
-         - platform: linux
-           os: ubuntu-latest
-           target: x86_64-unknown-linux-gnu
+#     strategy:
+#       matrix:
+#         platform: [ linux, mac-x86_64, windows ]
+#         include:
+#          - platform: linux
+#            os: ubuntu-latest
+#            target: x86_64-unknown-linux-gnu
 
-         - platform: mac-x86_64
-           os: macos-13
-           target: x86_64-apple-darwin
+#          - platform: mac-x86_64
+#            os: macos-13
+#            target: x86_64-apple-darwin
 
-         - platform: windows
-           os: windows-latest
-           target: x86_64-pc-windows-gnu
-           ext: .exe
+#          - platform: windows
+#            os: windows-latest
+#            target: x86_64-pc-windows-gnu
+#            ext: .exe
 
-    permissions:
-      contents: write
-      pull-requests: read
+#     permissions:
+#       contents: write
+#       pull-requests: read
 
-    steps:
-      - uses: actions/checkout@v2
+#     steps:
+#       - uses: actions/checkout@v2
 
-      - run: rustup target add ${{ matrix.target }}
+#       - run: rustup target add ${{ matrix.target }}
 
-      - run: cargo build --release --all-features --target ${{ matrix.target }}
+#       - run: cargo build --release --all-features --target ${{ matrix.target }}
 
-      - run: mv ./target/${{ matrix.target }}/release/shreddit${{ matrix.ext }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
+#       - run: mv ./target/${{ matrix.target }}/release/shreddit${{ matrix.ext }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
 
-      - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
