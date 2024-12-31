@@ -8,7 +8,7 @@ license = "MIT"
 repository = "https://github.com/andrewbanchich/shreddit"
 
 [dependencies]
-async-stream = "0.3.5"
+async-stream = "0.3.6"
 async-trait = "0.1.68"
 chrono = { version = "0.4.26", features = ["serde"] }
 clap = { version = "4.5.23", features = ["derive", "env"] }
