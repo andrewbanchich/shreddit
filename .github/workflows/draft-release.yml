@@ -5,16 +5,14 @@ on:
       - master
 
 jobs:
-
   draft-release:
     name: Draft Release
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
     outputs:
       version: ${{ steps.create_release.outputs.tag_name }}
-    
+
     steps:
-    
       - id: create_release
         uses: release-drafter/release-drafter@v5
         env:
@@ -24,29 +22,28 @@ jobs:
     name: build
     runs-on: ${{ matrix.os }}
     needs: [draft-release]
-    
+
     strategy:
       matrix:
-        platform: [ linux, mac, windows ]
+        platform: [linux, mac, windows]
         include:
-         - platform: linux
-           os: ubuntu-latest
-           target: x86_64-unknown-linux-musl
-           use-cross: true
-         - platform: mac
-           os: macos-latest
-           target: x86_64-apple-darwin
-         - platform: windows
-           os: windows-latest
-           target: x86_64-pc-windows-gnu
-           ext: .exe
-    
+          - platform: linux
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            use-cross: true
+          - platform: mac
+            os: macos-latest
+            target: arm64e-apple-darwin
+          - platform: windows
+            os: windows-latest
+            target: x86_64-pc-windows-gnu
+            ext: .exe
+
     permissions:
       contents: write
       pull-requests: read
-      
+
     steps:
-    
       - uses: actions/checkout@v2
 
       - uses: actions-rs/toolchain@v1
@@ -58,10 +55,9 @@ jobs:
           command: build
           use-cross: ${{ matrix.use-cross }}
           args: --release --all-features --target ${{ matrix.target }}
-          
+
       - run: mv ./target/${{ matrix.target }}/release/shreddit${{ matrix.ext }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
 
       - run: gh release upload --clobber ${{ needs.draft-release.outputs.version }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
