@@ -5,7 +5,7 @@ use crate::{
 };
 use async_stream::stream;
 use async_trait::async_trait;
-use chrono::{DateTime, NaiveDateTime, TimeZone, Utc};
+use chrono::{DateTime, Utc};
 use futures_core::Stream;
 use reqwest::{header::HeaderMap, Client};
 use serde::Deserialize;
@@ -177,8 +177,7 @@ impl Comment {
     pub fn created(&self) -> DateTime<Utc> {
         match &self.source {
             Source::Api { created_utc, .. } => {
-                let dt = NaiveDateTime::from_timestamp_opt(*created_utc as i64, 0).unwrap();
-                Utc.from_utc_datetime(&dt)
+                DateTime::from_timestamp(*created_utc as i64, 0).unwrap()
             }
             Source::Gdpr { date, .. } => *date,
         }
@@ -363,8 +362,8 @@ enum Response {
 #[derive(Debug, Deserialize)]
 pub struct ResponseData {
     pub children: Vec<Child>,
-    pub after: Option<String>,
-    pub before: Option<String>,
+    // pub after: Option<String>,
+    // pub before: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
