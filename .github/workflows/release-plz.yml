@@ -54,36 +54,38 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
   upload-assets:
-    name: upload-assets
-    if: needs.release-plz-release.outputs.releases_created == true && github.repository_owner == 'andrewbanchich'
+    name: Upload assets
+    # if: needs.release-plz-release.outputs.releases_created == true && github.repository_owner == 'andrewbanchich'
     needs:
       - release-plz-release
     runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - platform: linux
-            os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-          - platform: mac-x86_64
-            os: macos-13
-            target: x86_64-apple-darwin
-          - platform: windows
-            os: windows-latest
-            target: x86_64-pc-windows-gnu
-            ext: .exe
-
-    permissions:
-      contents: write
-      pull-requests: read
-
     steps:
-      - uses: actions/checkout@v2
-      - run: rustup target add ${{ matrix.target }}
-      - run: cargo build --release --all-features --target ${{ matrix.target }}
-      - run: mv ./target/${{ matrix.target }}/release/shreddit${{ matrix.ext }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
-      - run: gh release upload --clobber $(echo "$RELEASES" | jq -r '.[0].version') ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASES: ${{ needs.release-plz-release.outputs.releases }}
-          RELEASES_CREATED: ${{ needs.release-plz-release.outputs.releases_created }}
+      - run: echo ${{ needs.release-plz-release.outputs.releases_created }}
+    # strategy:
+    #   matrix:
+    #     include:
+    #       - platform: linux
+    #         os: ubuntu-latest
+    #         target: x86_64-unknown-linux-gnu
+    #       - platform: mac-x86_64
+    #         os: macos-13
+    #         target: x86_64-apple-darwin
+    #       - platform: windows
+    #         os: windows-latest
+    #         target: x86_64-pc-windows-gnu
+    #         ext: .exe
+
+    # permissions:
+    #   contents: write
+    #   pull-requests: read
+
+    # steps:
+    #   - uses: actions/checkout@v2
+    #   - run: rustup target add ${{ matrix.target }}
+    #   - run: cargo build --release --all-features --target ${{ matrix.target }}
+    #   - run: mv ./target/${{ matrix.target }}/release/shreddit${{ matrix.ext }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
+    #   - run: gh release upload --clobber $(echo "$RELEASES" | jq -r '.[0].version') ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #       RELEASES: ${{ needs.release-plz-release.outputs.releases }}
+    #       RELEASES_CREATED: ${{ needs.release-plz-release.outputs.releases_created }}
