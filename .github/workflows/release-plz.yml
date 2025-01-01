@@ -55,7 +55,7 @@ jobs:
 
   upload-assets:
     name: Upload assets
-    if: needs.release-plz-release.outputs.releases_created && github.repository_owner == 'andrewbanchich'
+    if: ${{ needs.release-plz-release.outputs.releases_created }} && github.repository_owner == 'andrewbanchich'
     needs:
       - release-plz-release
     runs-on: ${{ matrix.os }}
