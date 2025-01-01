@@ -82,7 +82,7 @@ jobs:
       - run: rustup target add ${{ matrix.target }}
       - run: cargo build --release --all-features --target ${{ matrix.target }}
       - run: mv ./target/${{ matrix.target }}/release/shreddit${{ matrix.ext }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
-      - run: gh release upload --clobber $(echo "$RELEASES" | jq -r '.[0].version') ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
+      - run: gh release upload --clobber $(echo "$RELEASES" | jq -r '.[0].tag') ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASES: ${{ needs.release-plz-release.outputs.releases }}
