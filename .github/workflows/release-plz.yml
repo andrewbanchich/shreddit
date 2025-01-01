@@ -58,7 +58,8 @@ jobs:
     # if: needs.release-plz-release.outputs.releases_created == true && github.repository_owner == 'andrewbanchich'
     needs:
       - release-plz-release
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    # runs-on: ${{ matrix.os }}
     steps:
       - run: echo ${{ needs.release-plz-release.outputs.releases_created }}
     # strategy:
