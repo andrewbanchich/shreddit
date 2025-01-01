@@ -51,7 +51,7 @@ jobs:
 
   upload-assets:
     name: upload-assets
-    if: jobs.release-plz-release.outputs.releases_created && github.repository_owner == 'andrewbanchich'
+    if: needs.release-plz-release.outputs.releases_created == true && github.repository_owner == 'andrewbanchich'
     needs:
       - release-plz-release
     runs-on: ${{ matrix.os }}
@@ -83,5 +83,5 @@ jobs:
       - run: gh release upload --clobber $(echo "$RELEASES" | jq -r '.[0].version') ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASES: ${{ jobs.release-plz-release.outputs.releases }}
-          RELEASES_CREATED: ${{ jobs.release-plz-release.outputs.releases_created }}
+          RELEASES: ${{ needs.release-plz-release.outputs.releases }}
+          RELEASES_CREATED: ${{ needs.release-plz-release.outputs.releases_created }}
