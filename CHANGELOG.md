@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.8](https://github.com/andrewbanchich/shreddit/compare/v0.9.7...v0.9.8) - 2025-01-01
+
+### Other
+
+- more fix workflow
+- more fix workflow
+
 ## [0.9.7](https://github.com/andrewbanchich/shreddit/compare/v0.9.6...v0.9.7) - 2025-01-01
 
 ### Fixed
