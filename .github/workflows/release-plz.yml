@@ -80,6 +80,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: rustup target add ${{ matrix.target }}
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: cargo build --release --all-features --target ${{ matrix.target }}
       - run: mv ./target/${{ matrix.target }}/release/shreddit${{ matrix.ext }} ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
       - run: gh release upload --clobber $(echo "$RELEASES" | jq -r '.[0].tag') ./target/${{ matrix.target }}/release/shreddit-${{ matrix.platform }}${{ matrix.ext }}
