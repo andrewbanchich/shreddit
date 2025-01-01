@@ -79,6 +79,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - run: echo ${{ needs.release-plz-release.outputs.releases_created }}
       - run: rustup target add ${{ matrix.target }}
       - uses: actions/cache@v4
         with:
