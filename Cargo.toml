@@ -11,7 +11,7 @@ repository = "https://github.com/andrewbanchich/shreddit"
 async-stream = "0.3.6"
 async-trait = "0.1.86"
 chrono = { version = "0.4.26", features = ["serde"] }
-clap = { version = "4.5.27", features = ["derive", "env"] }
+clap = { version = "4.5.28", features = ["derive", "env"] }
 csv = "1.2.2"
 dotenvy = "0.15.7"
 futures-core = "0.3.31"
