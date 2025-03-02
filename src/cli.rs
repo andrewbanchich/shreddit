@@ -1,8 +1,27 @@
 use crate::things::{CommentIdSet, PostIdSet, SubredditSet, ThingType, LOREM_IPSUM};
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Utc, Duration};
 use clap::Parser;
 use std::path::PathBuf;
+use parse_duration::parse;
+use std::str::FromStr;
 use tracing::{debug, warn};
+
+/// Parses `SHREDDIT_BEFORE` to support:
+/// - Absolute timestamps (ISO 8601) → `"2025-01-31T03:16:30Z"`
+/// - Negative durations (`-30d`, `-2w`, `-5h`) → Converts to `Utc::now() - duration`
+fn parse_before(input: &str) -> Result<DateTime<Utc>, String> {
+    if input.starts_with('-') {
+        match parse(&input[1..]) {
+            Ok(duration) => Ok(Utc::now() - Duration::from_std(duration).unwrap()),
+            Err(_) => Err(format!("Invalid duration format for SHREDDIT_BEFORE: {}", input)),
+        }
+    } else if parse(input).is_ok() {
+        Err(format!("Durations must be negative (e.g., `-30d`). Got: {}", input))
+    } else {
+        DateTime::from_str(input)
+            .map_err(|_| format!("Invalid timestamp format for SHREDDIT_BEFORE: {}", input))
+    }
+}
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -34,7 +53,8 @@ pub struct Config {
     #[clap(long, env = "SHREDDIT_THING_TYPES", default_values = &["posts", "comments"], value_delimiter = ',')]
     pub thing_types: Vec<ThingType>,
 
-    #[clap(long, env = "SHREDDIT_BEFORE", default_value_t = Utc::now())]
+    /// Delete items before a specific date or duration (e.g., `-30d`).
+    #[clap(long, env = "SHREDDIT_BEFORE", default_value_t = Utc::now(), value_parser = parse_before)]
     pub before: DateTime<Utc>,
 
     #[clap(long, env = "SHREDDIT_MAX_SCORE")]
