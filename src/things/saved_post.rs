@@ -99,6 +99,12 @@ impl SavedPost {
                 return true;
             }
         }
+        if let Some(only_subreddits) = &config.only_subreddits {
+            if !only_subreddits.is_empty() && !only_subreddits.contains(&self.subreddit) {
+                debug!("Skipping due to `only_subreddits` filter");
+                return true;
+            }
+        }
         false
     }
 }
