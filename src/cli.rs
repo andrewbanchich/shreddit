@@ -75,7 +75,7 @@ pub struct Config {
     pub skip_post_ids: Option<PostIdSet>,
 
     // If specified, only posts, comments, saved posts, and saved comments in the specified subreddits will be deleted
-    #[clap(long, env = "SHREDDIT_ONLY_SUBREDDITS")]
+    #[clap(long, env = "SHREDDIT_ONLY_SUBREDDITS", conflicts_with="skip_subreddits")]
     pub only_subreddits: Option<SubredditSet>,
 }
 
