@@ -1,25 +1,39 @@
 use crate::things::{CommentIdSet, PostIdSet, SubredditSet, ThingType, LOREM_IPSUM};
-use chrono::{DateTime, Utc, Duration};
+use chrono::{DateTime, Utc};
 use clap::Parser;
 use std::path::PathBuf;
-use parse_duration::parse;
-use std::str::FromStr;
+use parse_datetime::parse_datetime;
 use tracing::{debug, warn};
 
 /// Parses `SHREDDIT_BEFORE` to support:
 /// - Absolute timestamps (ISO 8601) → `"2025-01-31T03:16:30Z"`
-/// - Negative durations (`-30d`, `-2w`, `-5h`) → Converts to `Utc::now() - duration`
+/// - Negative durations (`-30 days`, `-2 weeks`, `-5 hours`) → Converts to `Utc::now() - duration`
+/// see https://github.com/uutils/parse_datetime for formats
 fn parse_before(input: &str) -> Result<DateTime<Utc>, String> {
+    // we only work with dates in the past
     if input.starts_with('-') {
-        match parse(&input[1..]) {
-            Ok(duration) => Ok(Utc::now() - Duration::from_std(duration).unwrap()),
+        // Parse the duration part (excluding the '-')
+        match parse_datetime(&input[1..]) {
+            Ok(datetime) => {
+                // Convert the parsed `DateTime<FixedOffset>` to `DateTime<Utc>`
+                let datetime_utc = datetime.with_timezone(&Utc);
+                // Calculate the duration by subtracting the current time
+                let duration = datetime_utc - Utc::now();
+                // Subtract the duration from the current time to get the target timestamp
+                Ok(Utc::now() - duration)
+            },
             Err(_) => Err(format!("Invalid duration format for SHREDDIT_BEFORE: {}", input)),
         }
-    } else if parse(input).is_ok() {
-        Err(format!("Durations must be negative (e.g., `-30d`). Got: {}", input))
     } else {
-        DateTime::from_str(input)
-            .map_err(|_| format!("Invalid timestamp format for SHREDDIT_BEFORE: {}", input))
+        // Try to parse as an absolute timestamp
+        match parse_datetime(input) {
+            Ok(datetime) => {
+                // Convert the parsed `DateTime<FixedOffset>` to `DateTime<Utc>`
+                let utc_timestamp = datetime.with_timezone(&Utc);
+                Ok(utc_timestamp)
+            },
+            Err(_) => Err(format!("Invalid timestamp format for SHREDDIT_BEFORE: {}", input)),
+        }
     }
 }
 
