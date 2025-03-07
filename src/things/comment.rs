@@ -205,7 +205,7 @@ impl Comment {
             return true;
         }
         if let Some(only_subreddits) = &config.only_subreddits {
-            if !only_subreddits.is_empty() && !only_subreddits.contains(&self.subreddit) {
+            if !only_subreddits.contains(&self.subreddit) {
                 debug!("Skipping due to `only_subreddits` filter");
                 return true;
             }
@@ -291,9 +291,9 @@ pub async fn list(client: &Client, config: &Config) -> impl Stream<Item = Commen
 
         loop {
     let query_params = if let Some(last_seen) = last_seen {
-        format!("?after={last_seen}")
+        format!("?after={last_seen}&limit=100")
     } else {
-        String::new()
+        format!("?sort=top&limit=100")
     };
 
     let uri = format!("https://reddit.com/user/{username}/comments.json{query_params}");
