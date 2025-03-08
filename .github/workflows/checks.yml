@@ -1,0 +1,50 @@
+name: checks
+on:
+  pull_request_target:
+    types:
+      - assigned
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  lint_pr:
+    name: lint PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: validate PR title adheres to Conventional Commits spec
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  checks:
+    name: checks
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        id: cache
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: lint
+        run: cargo clippy --all-features -- -Dwarnings
+
+      - name: test
+        run: cargo test
+
+      # check for unused dependencies
+      - run: cargo install cargo-machete --force
+      - name: unused dependencies
+        run: cargo machete
