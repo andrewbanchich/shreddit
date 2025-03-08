@@ -1,4 +1,4 @@
-use crate::things::{CommentIdSet, PostIdSet, SubredditSet, ThingType, LOREM_IPSUM};
+use crate::things::{CommentIdSet, LOREM_IPSUM, PostIdSet, SubredditSet, ThingType};
 use chrono::{DateTime, Utc};
 use clap::Parser;
 use parse_datetime::parse_datetime;
@@ -115,7 +115,10 @@ impl Config {
             if self.gdpr_export_dir.is_none() {
                 // As of this writing, there is an approx 1000 comment limit when pulling from JSON. Only reliable way to reach all data is via GDPR.
                 // See issue #35: https://github.com/andrewbanchich/shreddit/issues/35
-                warn!("Because you are not using a GDPR export, not all data will be reached.\nFor info on how to use a GDPR export, see: {}", r##"https://github.com/andrewbanchich/shreddit#delete-all-your-data-using-gdpr-export"##);
+                warn!(
+                    "Because you are not using a GDPR export, not all data will be reached.\nFor info on how to use a GDPR export, see: {}",
+                    r##"https://github.com/andrewbanchich/shreddit#delete-all-your-data-using-gdpr-export"##
+                );
             }
         } else if self.dry_run {
             debug!("Skipping DELETION due to 'dry run' filter");

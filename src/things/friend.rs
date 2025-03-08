@@ -1,7 +1,7 @@
 use super::Shred;
 use crate::{cli::Config, sources::gdpr::Gdpr};
 use async_trait::async_trait;
-use reqwest::{header::HeaderMap, Client};
+use reqwest::{Client, header::HeaderMap};
 use serde::Deserialize;
 use std::fmt::Debug;
 use tracing::{error, info, instrument};

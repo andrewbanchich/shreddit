@@ -3,17 +3,17 @@ use std::error::Error;
 use access_token::new_access_token;
 use clap::Parser;
 use cli::Config;
-use futures_util::{pin_mut, StreamExt};
+use futures_util::{StreamExt, pin_mut};
 use reqwest::Client;
 use things::Shred;
 use tracing::{debug, error, info};
-use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
+use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 use crate::{
     sources::gdpr,
     things::{
-        comment, post, saved_comment, saved_post, Comment, Friend, Post, SavedComment, SavedPost,
-        ThingType,
+        Comment, Friend, Post, SavedComment, SavedPost, ThingType, comment, post, saved_comment,
+        saved_post,
     },
 };
 
