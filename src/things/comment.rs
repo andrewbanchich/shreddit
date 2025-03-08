@@ -204,6 +204,12 @@ impl Comment {
             debug!("Skipping due to `before` filter ({})", config.before);
             return true;
         }
+        if let Some(only_subreddits) = &config.only_subreddits {
+            if !only_subreddits.contains(&self.subreddit) {
+                debug!("Skipping due to `only_subreddits` filter");
+                return true;
+            }
+        }
         match &self.source {
             Source::Api { score, .. } => {
                 if let Some(max_score) = config.max_score {
@@ -285,9 +291,9 @@ pub async fn list(client: &Client, config: &Config) -> impl Stream<Item = Commen
 
         loop {
     let query_params = if let Some(last_seen) = last_seen {
-        format!("?after={last_seen}")
+        format!("?after={last_seen}&limit=100")
     } else {
-        String::new()
+        format!("?sort=top&limit=100")
     };
 
     let uri = format!("https://reddit.com/user/{username}/comments.json{query_params}");

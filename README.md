@@ -70,7 +70,7 @@ Options:
       --thing-types <THING_TYPES>
           What "things" you want to delete [env: SHREDDIT_THING_TYPES=] [default: posts comments] [possible values: posts, comments, friends, saved-posts, saved-comments]
       --before <BEFORE>
-          [env: SHREDDIT_BEFORE=] [default: "2023-06-25 14:42:43.828192320 UTC"]
+          [env: SHREDDIT_BEFORE=] [default: "2025-03-03 07:24:13.673800 UTC"]
       --max-score <MAX_SCORE>
           [env: SHREDDIT_MAX_SCORE=]
   -r, --replacement-comment <REPLACEMENT_COMMENT>
@@ -82,11 +82,13 @@ Options:
       --edit-only
           If specified, comments will only be edited, not deleted. - Requires gdpr_export [env: SHREDDIT_EDIT_ONLY=]
       --skip-subreddits <SKIP_SUBREDDITS>
-          If specified, will skip these subreddits [env: SHREDDIT_SKIP_SUBREDDITS=] 
+          If specified, will skip these subreddits [env: SHREDDIT_SKIP_SUBREDDITS=]
       --skip-comment-ids <SKIP_COMMENT_IDS>
           If specified, will skip comments and saved comments with listed ids [env: SHREDDIT_SKIP_COMMENT_IDS=]
       --skip-post-ids <SKIP_POST_IDS>
           If specified, will skip posts and saved posts with listed ids [env: SHREDDIT_SKIP_POST_IDS=]
+      --only-subreddits <ONLY_SUBREDDITS>
+          If specified, only posts, comments, saved posts, and saved comments in the specified subreddits will be deleted [env: SHREDDIT_ONLY_SUBREDDITS=]
   -h, --help
           Print help
   -V, --version
