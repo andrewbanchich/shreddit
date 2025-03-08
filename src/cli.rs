@@ -10,37 +10,14 @@ use tracing::{debug, warn};
 /// - Negative durations (`-30 days`, `-2 weeks`, `-5 hours`) → Converts to `Utc::now() - duration`
 /// see https://github.com/uutils/parse_datetime for formats
 fn parse_before(input: &str) -> Result<DateTime<Utc>, String> {
-    // we only work with dates in the past
-    if input.starts_with('-') {
-        // Parse the duration part (excluding the '-')
-        match parse_datetime(&input[1..]) {
-            Ok(datetime) => {
-                // Convert the parsed `DateTime<FixedOffset>` to `DateTime<Utc>`
-                let datetime_utc = datetime.with_timezone(&Utc);
-                // Calculate the duration by subtracting the current time
-                let duration = datetime_utc - Utc::now();
-                // Subtract the duration from the current time to get the target timestamp
-                Ok(Utc::now() - duration)
-            }
-            Err(_) => Err(format!(
-                "Invalid duration format for SHREDDIT_BEFORE: {}",
-                input
-            )),
-        }
-    } else {
-        // Try to parse as an absolute timestamp
-        match parse_datetime(input) {
-            Ok(datetime) => {
-                // Convert the parsed `DateTime<FixedOffset>` to `DateTime<Utc>`
-                let utc_timestamp = datetime.with_timezone(&Utc);
-                Ok(utc_timestamp)
-            }
-            Err(_) => Err(format!(
-                "Invalid timestamp format for SHREDDIT_BEFORE: {}",
-                input
-            )),
-        }
+    let before = parse_datetime(input).map_err(|e| format!("invalid datetime {e}"))?;
+    let now = Utc::now();
+
+    if before > now {
+        return Err("--before datetime must be before current time. please use either negative relative format (`-30 days`) or an absolute timestamp in the past".to_string());
     }
+
+    Ok(before.with_timezone(&Utc))
 }
 
 #[derive(Debug, Parser)]
@@ -132,5 +109,30 @@ impl Config {
             debug!("Skipping DELETION due to 'dry run' filter");
         }
         self.edit_only | self.dry_run
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn relative_datetime() {
+        let now = dbg!(Utc::now());
+
+        let absolute_past = parse_before("1996-12-19T16:39:57-08:00").unwrap();
+        assert!(now > dbg!(absolute_past));
+
+        let absolute_future = parse_before("3000-12-19T16:39:57-08:00").unwrap_err();
+        assert!(dbg!(absolute_future).contains("must be before current time"));
+
+        let relative_past = dbg!(parse_before("-30 days").unwrap());
+        let delta_from_relative_format = now - dbg!(relative_past);
+        // this will always be off by one because library rounds down. datetime is accurate.
+        assert_eq!(delta_from_relative_format.num_days(), 29);
+
+        let relative_future = parse_before("30 days").unwrap_err();
+        assert!(dbg!(relative_future).contains("must be before current time"));
     }
 }
