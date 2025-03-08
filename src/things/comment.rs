@@ -293,7 +293,7 @@ pub async fn list(client: &Client, config: &Config) -> impl Stream<Item = Commen
     let query_params = if let Some(last_seen) = last_seen {
         format!("?after={last_seen}&limit=100")
     } else {
-        format!("?sort=top&limit=100")
+        "?sort=top&limit=100".to_string()
     };
 
     let uri = format!("https://reddit.com/user/{username}/comments.json{query_params}");
