@@ -1,0 +1,21 @@
+name: lint PR
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+permissions:
+  pull-requests: read
+
+jobs:
+  lint_pr:
+    name: lint PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: validate PR title adheres to Conventional Commits spec
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
