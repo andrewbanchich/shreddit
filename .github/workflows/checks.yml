@@ -38,6 +38,8 @@ jobs:
             target/
           key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+      - run: cargo fmt --check
+
       - name: lint
         run: cargo clippy --all-features -- -Dwarnings
 
