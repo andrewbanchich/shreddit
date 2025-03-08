@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use async_stream::stream;
 use async_trait::async_trait;
 use futures_core::Stream;
-use reqwest::{header::HeaderMap, Client};
+use reqwest::{Client, header::HeaderMap};
 use serde::Deserialize;
 use serde_json::Value;
 use tracing::{debug, error, info, instrument};

@@ -1,4 +1,4 @@
-use crate::things::{CommentIdSet, PostIdSet, SubredditSet, ThingType, LOREM_IPSUM};
+use crate::things::{CommentIdSet, LOREM_IPSUM, PostIdSet, SubredditSet, ThingType};
 use chrono::{DateTime, Utc};
 use clap::Parser;
 use parse_datetime::parse_datetime;
@@ -54,6 +54,9 @@ pub struct Config {
     /// Delete items before a specific date or duration (e.g., `-30d`).
     #[clap(long, env = "SHREDDIT_BEFORE", default_value_t = Utc::now(), value_parser = parse_before)]
     pub before: DateTime<Utc>,
+
+    #[clap(long, env = "SHREDDIT_AFTER")]
+    pub after: DateTime<Utc>,
 
     #[clap(long, env = "SHREDDIT_MAX_SCORE")]
     pub max_score: Option<i64>,
@@ -112,7 +115,10 @@ impl Config {
             if self.gdpr_export_dir.is_none() {
                 // As of this writing, there is an approx 1000 comment limit when pulling from JSON. Only reliable way to reach all data is via GDPR.
                 // See issue #35: https://github.com/andrewbanchich/shreddit/issues/35
-                warn!("Because you are not using a GDPR export, not all data will be reached.\nFor info on how to use a GDPR export, see: {}", r##"https://github.com/andrewbanchich/shreddit#delete-all-your-data-using-gdpr-export"##);
+                warn!(
+                    "Because you are not using a GDPR export, not all data will be reached.\nFor info on how to use a GDPR export, see: {}",
+                    r##"https://github.com/andrewbanchich/shreddit#delete-all-your-data-using-gdpr-export"##
+                );
             }
         } else if self.dry_run {
             debug!("Skipping DELETION due to 'dry run' filter");
