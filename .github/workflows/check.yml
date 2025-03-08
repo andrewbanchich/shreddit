@@ -1,9 +1,22 @@
 name: check
 on:
   pull_request_target:
-    types: [assigned, opened, synchronize, reopened]
+    types:
+      - assigned
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
+  lint_pr:
+    name: lint PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: validate PR title adheres to Conventional Commits spec
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   check:
     name: check
     runs-on: ${{ matrix.os }}
