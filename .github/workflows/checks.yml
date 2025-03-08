@@ -1,4 +1,4 @@
-name: lint
+name: checks
 on:
   pull_request_target:
     types:
@@ -17,8 +17,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  lint:
-    name: lint
+  checks:
+    name: checks
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -40,6 +40,9 @@ jobs:
 
       - name: lint
         run: cargo clippy --all-features -- -Dwarnings
+
+      - name: test
+        run: cargo test
 
       # check for unused dependencies
       - run: cargo install cargo-machete --force
