@@ -11,17 +11,8 @@ permissions:
   pull-requests: read
 
 jobs:
-  lint_pr:
-    name: lint PR
-    runs-on: ubuntu-latest
-    steps:
-      - name: validate PR title adheres to Conventional Commits spec
-        uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  checks:
-    name: checks
+  check:
+    name: check
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
