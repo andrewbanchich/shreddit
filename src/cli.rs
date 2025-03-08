@@ -1,8 +1,8 @@
 use crate::things::{CommentIdSet, PostIdSet, SubredditSet, ThingType, LOREM_IPSUM};
 use chrono::{DateTime, Utc};
 use clap::Parser;
-use std::path::PathBuf;
 use parse_datetime::parse_datetime;
+use std::path::PathBuf;
 use tracing::{debug, warn};
 
 /// Parses `SHREDDIT_BEFORE` to support:
@@ -21,8 +21,11 @@ fn parse_before(input: &str) -> Result<DateTime<Utc>, String> {
                 let duration = datetime_utc - Utc::now();
                 // Subtract the duration from the current time to get the target timestamp
                 Ok(Utc::now() - duration)
-            },
-            Err(_) => Err(format!("Invalid duration format for SHREDDIT_BEFORE: {}", input)),
+            }
+            Err(_) => Err(format!(
+                "Invalid duration format for SHREDDIT_BEFORE: {}",
+                input
+            )),
         }
     } else {
         // Try to parse as an absolute timestamp
@@ -31,8 +34,11 @@ fn parse_before(input: &str) -> Result<DateTime<Utc>, String> {
                 // Convert the parsed `DateTime<FixedOffset>` to `DateTime<Utc>`
                 let utc_timestamp = datetime.with_timezone(&Utc);
                 Ok(utc_timestamp)
-            },
-            Err(_) => Err(format!("Invalid timestamp format for SHREDDIT_BEFORE: {}", input)),
+            }
+            Err(_) => Err(format!(
+                "Invalid timestamp format for SHREDDIT_BEFORE: {}",
+                input
+            )),
         }
     }
 }
