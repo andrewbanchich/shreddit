@@ -25,7 +25,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -40,6 +43,8 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - run: rustup update
 
       - run: cargo fmt --check
 
