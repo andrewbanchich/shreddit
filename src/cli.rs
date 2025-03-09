@@ -5,11 +5,9 @@ use parse_datetime::parse_datetime;
 use std::path::PathBuf;
 use tracing::{debug, warn};
 
-/// Parses `SHREDDIT_BEFORE` to support:
-/// - Absolute timestamps (ISO 8601) → `"2025-01-31T03:16:30Z"`
-/// - Negative durations (`-30 days`, `-2 weeks`, `-5 hours`) → Converts to `Utc::now() - duration`
-///
-/// see https://github.com/uutils/parse_datetime for formats
+/// Parses relative timestamps to support:
+/// - Absolute timestamps (ISO 8601) → `2025-01-31T03:16:30Z`
+/// - [Negative durations](https://github.com/uutils/parse_datetime) (`-30 days`, `-2 weeks`, `-5 hours`)
 fn parse_relative(input: &str) -> Result<DateTime<Utc>, String> {
     let relative = parse_datetime(input).map_err(|e| format!("invalid datetime {e}"))?;
     let now = Utc::now();
