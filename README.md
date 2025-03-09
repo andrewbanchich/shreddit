@@ -41,7 +41,7 @@ Download the binary from the [GitHub Releases](https://github.com/andrewbanchich
 ## Create Reddit app credentials
 
 1. Navigate to Reddit -> preferences -> apps (tab) and click `create another app...`
-   - Access page directly at https://www.reddit.com/prefs/apps
+   - Access page directly at https://old.reddit.com/prefs/apps
 2. Give the app a name, like 'shreddit`. The name doesn't matter.
 3. Select `script`.
 4. Set the redirect URL to be `http://localhost:8080`.
@@ -62,7 +62,7 @@ Options:
   -p, --password <PASSWORD>
           Your Reddit password [env: SHREDDIT_PASSWORD=]
       --client-id <CLIENT_ID>
-          To create client credentials, you need to navigate to `https://www.reddit.com/prefs/apps/`, click `create another app...` and fill out the form. Select the `script` type, and set `redirect uri` as `http://localhost:8080` [env: SHREDDIT_CLIENT_ID=]
+          To create client credentials, you need to navigate to `https://old.reddit.com/prefs/apps/`, click `create another app...` and fill out the form. Select the `script` type, and set `redirect uri` as `http://localhost:8080` [env: SHREDDIT_CLIENT_ID=]
       --client-secret <CLIENT_SECRET>
           The client secret from when you created client credentials [env: SHREDDIT_CLIENT_SECRET=]
       --dry-run
