@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0](https://github.com/andrewbanchich/shreddit/compare/v1.0.2...v1.1.0) - 2025-03-09
+
+### Added
+
+- support relative timestamps in --after filters
+
+### Other
+
+- update doc comment for relative timestamps
+- rename variable
+
 ## [1.0.2](https://github.com/andrewbanchich/shreddit/compare/v1.0.1...v1.0.2) - 2025-03-09
 
 ### Fixed
