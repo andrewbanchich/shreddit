@@ -206,9 +206,11 @@ impl Comment {
                 return true;
             }
         }
-        if self.created() >= config.before {
-            debug!("Skipping due to `before` filter ({})", config.before);
-            return true;
+        if let Some(before) = config.before {
+            if self.created() >= before {
+                debug!("Skipping due to `before` filter ({before})");
+                return true;
+            }
         }
         if let Some(only_subreddits) = &config.only_subreddits {
             if !only_subreddits.contains(&self.subreddit) {
@@ -237,9 +239,11 @@ impl Comment {
                     return true;
                 }
 
-                if self.created() >= config.before {
-                    debug!("Skipping due to `before` filter ({})", config.before);
-                    return true;
+                if let Some(before) = config.before {
+                    if self.created() >= before {
+                        debug!("Skipping due to `before` filter ({before})");
+                        return true;
+                    }
                 }
 
                 if let Some(after) = config.after {

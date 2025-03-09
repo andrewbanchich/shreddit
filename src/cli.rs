@@ -53,7 +53,7 @@ pub struct Config {
 
     /// Delete items before a specific date or duration (e.g., `-30d`).
     #[clap(long, env = "SHREDDIT_BEFORE", value_parser = parse_before)]
-    pub before: DateTime<Utc>,
+    pub before: Option<DateTime<Utc>>,
 
     #[clap(long, env = "SHREDDIT_AFTER")]
     pub after: Option<DateTime<Utc>>,
