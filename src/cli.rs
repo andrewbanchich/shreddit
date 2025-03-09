@@ -52,11 +52,11 @@ pub struct Config {
     pub thing_types: Vec<ThingType>,
 
     /// Delete items before a specific date or duration (e.g., `-30d`).
-    #[clap(long, env = "SHREDDIT_BEFORE", default_value_t = Utc::now(), value_parser = parse_before)]
+    #[clap(long, env = "SHREDDIT_BEFORE", value_parser = parse_before)]
     pub before: DateTime<Utc>,
 
     #[clap(long, env = "SHREDDIT_AFTER")]
-    pub after: DateTime<Utc>,
+    pub after: Option<DateTime<Utc>>,
 
     #[clap(long, env = "SHREDDIT_MAX_SCORE")]
     pub max_score: Option<i64>,
