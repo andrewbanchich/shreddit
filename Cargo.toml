@@ -1,6 +1,6 @@
 [package]
 name = "shreddit"
-version = "1.0.1"
+version = "1.0.2"
 edition = "2024"
 authors = ["Andrew Banchich <crates-io@andrew.banchi.ch>"]
 description = "Overwrite and delete your Reddit account history."
