@@ -11,14 +11,14 @@ use tracing::{debug, warn};
 ///
 /// see https://github.com/uutils/parse_datetime for formats
 fn parse_relative(input: &str) -> Result<DateTime<Utc>, String> {
-    let before = parse_datetime(input).map_err(|e| format!("invalid datetime {e}"))?;
+    let relative = parse_datetime(input).map_err(|e| format!("invalid datetime {e}"))?;
     let now = Utc::now();
 
-    if before > now {
+    if relative > now {
         return Err("relative datetimes must be before current time. please use either negative relative format (`-30 days`) or an absolute timestamp in the past".to_string());
     }
 
-    Ok(before.with_timezone(&Utc))
+    Ok(relative.with_timezone(&Utc))
 }
 
 #[derive(Debug, Parser)]
