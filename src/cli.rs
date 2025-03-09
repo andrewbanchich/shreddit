@@ -10,12 +10,12 @@ use tracing::{debug, warn};
 /// - Negative durations (`-30 days`, `-2 weeks`, `-5 hours`) → Converts to `Utc::now() - duration`
 ///
 /// see https://github.com/uutils/parse_datetime for formats
-fn parse_before(input: &str) -> Result<DateTime<Utc>, String> {
+fn parse_relative(input: &str) -> Result<DateTime<Utc>, String> {
     let before = parse_datetime(input).map_err(|e| format!("invalid datetime {e}"))?;
     let now = Utc::now();
 
     if before > now {
-        return Err("--before datetime must be before current time. please use either negative relative format (`-30 days`) or an absolute timestamp in the past".to_string());
+        return Err("relative datetimes must be before current time. please use either negative relative format (`-30 days`) or an absolute timestamp in the past".to_string());
     }
 
     Ok(before.with_timezone(&Utc))
@@ -52,10 +52,11 @@ pub struct Config {
     pub thing_types: Vec<ThingType>,
 
     /// Delete items before a specific date or duration (e.g., `-30d`).
-    #[clap(long, env = "SHREDDIT_BEFORE", value_parser = parse_before)]
+    #[clap(long, env = "SHREDDIT_BEFORE", value_parser = parse_relative)]
     pub before: Option<DateTime<Utc>>,
 
-    #[clap(long, env = "SHREDDIT_AFTER")]
+    /// Delete items after a specific date or duration (e.g., `-30d`).
+    #[clap(long, env = "SHREDDIT_AFTER", value_parser = parse_relative)]
     pub after: Option<DateTime<Utc>>,
 
     #[clap(long, env = "SHREDDIT_MAX_SCORE")]
@@ -136,18 +137,18 @@ mod tests {
     fn relative_datetime() {
         let now = dbg!(Utc::now());
 
-        let absolute_past = parse_before("1996-12-19T16:39:57-08:00").unwrap();
+        let absolute_past = parse_relative("1996-12-19T16:39:57-08:00").unwrap();
         assert!(now > dbg!(absolute_past));
 
-        let absolute_future = parse_before("3000-12-19T16:39:57-08:00").unwrap_err();
+        let absolute_future = parse_relative("3000-12-19T16:39:57-08:00").unwrap_err();
         assert!(dbg!(absolute_future).contains("must be before current time"));
 
-        let relative_past = dbg!(parse_before("-30 days").unwrap());
+        let relative_past = dbg!(parse_relative("-30 days").unwrap());
         let delta_from_relative_format = now - dbg!(relative_past);
         // this will always be off by one because library rounds down. datetime is accurate.
         assert_eq!(delta_from_relative_format.num_days(), 29);
 
-        let relative_future = parse_before("30 days").unwrap_err();
+        let relative_future = parse_relative("30 days").unwrap_err();
         assert!(dbg!(relative_future).contains("must be before current time"));
     }
 }

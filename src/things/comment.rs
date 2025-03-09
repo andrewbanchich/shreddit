@@ -226,6 +226,7 @@ impl Comment {
                         return true;
                     }
                 }
+
                 if let Some(after) = config.after {
                     if self.created() <= after {
                         debug!("Skipping due to `after` filter ({})", after);
