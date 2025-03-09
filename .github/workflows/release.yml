@@ -73,3 +73,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASES: ${{ needs.release-plz.outputs.releases }}
           RELEASES_CREATED: ${{ needs.release-plz.outputs.releases_created }}
+        shell: bash
