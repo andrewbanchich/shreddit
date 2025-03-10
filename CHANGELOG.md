@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1](https://github.com/andrewbanchich/shreddit/compare/v1.1.0...v1.1.1) - 2025-03-10
+
+### Other
+
+- bump serde from 1.0.218 to 1.0.219 ([#160](https://github.com/andrewbanchich/shreddit/pull/160))
+
 ## [1.1.0](https://github.com/andrewbanchich/shreddit/compare/v1.0.2...v1.1.0) - 2025-03-09
 
 ### Added
