@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1](https://github.com/andrewbanchich/shreddit/compare/v1.1.0...v1.1.1) - 2025-03-27
+
+### Other
+
+- bump clap from 4.5.32 to 4.5.33 ([#170](https://github.com/andrewbanchich/shreddit/pull/170))
+- bump reqwest from 0.12.14 to 0.12.15 ([#168](https://github.com/andrewbanchich/shreddit/pull/168))
+- bump async-trait from 0.1.87 to 0.1.88 ([#167](https://github.com/andrewbanchich/shreddit/pull/167))
+- bump reqwest from 0.12.13 to 0.12.14 ([#165](https://github.com/andrewbanchich/shreddit/pull/165))
+- bump tokio from 1.44.0 to 1.44.1 ([#166](https://github.com/andrewbanchich/shreddit/pull/166))
+- bump reqwest from 0.12.12 to 0.12.13 ([#164](https://github.com/andrewbanchich/shreddit/pull/164))
+- bump clap from 4.5.31 to 4.5.32
+- bump serde from 1.0.218 to 1.0.219 ([#160](https://github.com/andrewbanchich/shreddit/pull/160))
+
 ## [1.1.0](https://github.com/andrewbanchich/shreddit/compare/v1.0.2...v1.1.0) - 2025-03-09
 
 ### Added
