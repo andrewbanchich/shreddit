@@ -82,19 +82,19 @@ pub struct Config {
     #[clap(long, env = "SHREDDIT_EDIT_ONLY")]
     pub edit_only: bool,
 
-    /// If specified, will skip these subreddits
+    /// If specified, will skip these subreddits. Comma-separated. - Case-sensitive
     #[clap(long, env = "SHREDDIT_SKIP_SUBREDDITS")]
     pub skip_subreddits: Option<SubredditSet>,
 
-    /// If specified, will skip comments and saved comments with listed ids
+    /// If specified, will skip comments and saved comments with listed ids. - Comma-separated
     #[clap(long, env = "SHREDDIT_SKIP_COMMENT_IDS")]
     pub skip_comment_ids: Option<CommentIdSet>,
 
-    /// If specified, will skip posts and saved posts with listed ids
+    /// If specified, will skip posts and saved posts with listed ids. - Comma-separated
     #[clap(long, env = "SHREDDIT_SKIP_POST_IDS")]
     pub skip_post_ids: Option<PostIdSet>,
 
-    /// If specified, only posts, comments, saved posts, and saved comments in the specified subreddits will be deleted
+    /// If specified, only posts, comments, saved posts, and saved comments in the specified subreddits will be deleted. - Comma-separated. Case-sensitive
     #[clap(
         long,
         env = "SHREDDIT_ONLY_SUBREDDITS",
