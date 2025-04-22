@@ -49,11 +49,11 @@ pub struct Config {
     #[clap(long, env = "SHREDDIT_THING_TYPES", default_values = &["posts", "comments"], value_delimiter = ',')]
     pub thing_types: Vec<ThingType>,
 
-    /// Delete items before a specific date or duration (e.g., `-30d`).
+    /// Delete items before a specific date or duration (e.g., `-30 days`).
     #[clap(long, env = "SHREDDIT_BEFORE", value_parser = parse_relative)]
     pub before: Option<DateTime<Utc>>,
 
-    /// Delete items after a specific date or duration (e.g., `-30d`).
+    /// Delete items after a specific date or duration (e.g., `-30 days`).
     #[clap(long, env = "SHREDDIT_AFTER", value_parser = parse_relative)]
     pub after: Option<DateTime<Utc>>,
 
