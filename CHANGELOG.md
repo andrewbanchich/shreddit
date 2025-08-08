@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2](https://github.com/andrewbanchich/shreddit/compare/v1.1.1...v1.1.2) - 2025-08-08
+
+### Other
+
+- bump clap from 4.5.37 to 4.5.43 ([#206](https://github.com/andrewbanchich/shreddit/pull/206))
+- bump tokio from 1.45.0 to 1.47.1 ([#204](https://github.com/andrewbanchich/shreddit/pull/204))
+- bump reqwest from 0.12.15 to 0.12.22 ([#196](https://github.com/andrewbanchich/shreddit/pull/196))
+- bump tokio from 1.44.2 to 1.45.0 ([#183](https://github.com/andrewbanchich/shreddit/pull/183))
+
 ## [1.1.1](https://github.com/andrewbanchich/shreddit/compare/v1.1.0...v1.1.1) - 2025-04-30
 
 ### Fixed
