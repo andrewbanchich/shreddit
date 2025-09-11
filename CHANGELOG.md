@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2](https://github.com/andrewbanchich/shreddit/compare/v1.1.1...v1.1.2) - 2025-09-11
+
+### Other
+
+- bump amannn/action-semantic-pull-request from 5 to 6 ([#211](https://github.com/andrewbanchich/shreddit/pull/211))
+- bump async-trait from 0.1.88 to 0.1.89 ([#210](https://github.com/andrewbanchich/shreddit/pull/210))
+- bump serde_json from 1.0.142 to 1.0.143 ([#213](https://github.com/andrewbanchich/shreddit/pull/213))
+- bump clap from 4.5.44 to 4.5.47 ([#217](https://github.com/andrewbanchich/shreddit/pull/217))
+- bump actions/checkout from 4 to 5 ([#212](https://github.com/andrewbanchich/shreddit/pull/212))
+- bump chrono from 0.4.41 to 0.4.42 ([#218](https://github.com/andrewbanchich/shreddit/pull/218))
+- bump tracing-subscriber from 0.3.19 to 0.3.20 ([#216](https://github.com/andrewbanchich/shreddit/pull/216))
+- bump reqwest from 0.12.22 to 0.12.23 ([#208](https://github.com/andrewbanchich/shreddit/pull/208))
+- bump parse_datetime from 0.9.0 to 0.11.0 ([#205](https://github.com/andrewbanchich/shreddit/pull/205))
+- bump serde_json from 1.0.140 to 1.0.142 ([#203](https://github.com/andrewbanchich/shreddit/pull/203))
+- bump clap from 4.5.43 to 4.5.44 ([#207](https://github.com/andrewbanchich/shreddit/pull/207))
+- bump clap from 4.5.37 to 4.5.43 ([#206](https://github.com/andrewbanchich/shreddit/pull/206))
+- bump tokio from 1.45.0 to 1.47.1 ([#204](https://github.com/andrewbanchich/shreddit/pull/204))
+- bump reqwest from 0.12.15 to 0.12.22 ([#196](https://github.com/andrewbanchich/shreddit/pull/196))
+- bump tokio from 1.44.2 to 1.45.0 ([#183](https://github.com/andrewbanchich/shreddit/pull/183))
+
 ## [1.1.1](https://github.com/andrewbanchich/shreddit/compare/v1.1.0...v1.1.1) - 2025-04-30
 
 ### Fixed
