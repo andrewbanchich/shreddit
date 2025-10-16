@@ -177,28 +177,38 @@ impl Shred for Post {
 
 /// https://www.reddit.com/dev/api/#GET_user_{username}_submitted
 #[instrument(level = "info", skip_all)]
-pub async fn list(client: &Client, config: &Config) -> impl Stream<Item = Post> {
+pub async fn list(
+    client: &Client,
+    access_token: &str,
+    config: &Config,
+) -> impl Stream<Item = Post> {
     info!("Fetching posts...");
 
     let client = client.clone();
     let username = config.username.clone();
     let user_agent = config.user_agent.clone();
+    let mut headers = HeaderMap::new();
+    headers.insert(
+        "Authorization",
+        format!("Bearer {access_token}").parse().unwrap(),
+    );
+    headers.insert("User-Agent", user_agent.parse().unwrap());
 
     stream! {
     let mut last_seen = None;
 
         loop {
     let query_params = if let Some(last_seen) = last_seen {
-        format!("?after={last_seen}")
+        format!("?after={last_seen}&limit=100")
     } else {
-        String::new()
+        "?limit=100".to_string()
     };
 
-    let uri = format!("https://reddit.com/user/{username}/submitted.json{query_params}");
+    let uri = format!("https://oauth.reddit.com/user/{username}/submitted.json{query_params}");
 
             let res: PostRes = client
         .get(&uri)
-        .header("User-Agent", user_agent.clone())
+        .headers(headers.clone())
         .send()
         .await
         .unwrap()
