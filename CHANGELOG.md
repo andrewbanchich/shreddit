@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.5](https://github.com/andrewbanchich/shreddit/compare/v1.1.4...v1.1.5) - 2025-10-19
+
+### Other
+
+- Change default branch from 'master' to 'main'
+- bump csv from 1.3.1 to 1.4.0 ([#241](https://github.com/andrewbanchich/shreddit/pull/241))
+- remove unused
+
 ## [1.1.4](https://github.com/andrewbanchich/shreddit/compare/v1.1.3...v1.1.4) - 2025-10-19
 
 ### Fixed
