@@ -18,7 +18,7 @@ use reqwest::Client;
 use serde::Deserialize;
 use std::{collections::HashSet, fmt::Debug, ops::Deref, str::FromStr, time::Duration};
 use tokio::time::sleep;
-use tracing::{debug, instrument};
+use tracing::debug;
 
 use crate::cli::Config;
 use async_trait::async_trait;
@@ -43,17 +43,6 @@ pub trait Shred {
         self.edit(client, access_token, config).await;
         self.delete(client, access_token, config).await;
     }
-}
-
-#[instrument(level = "debug", skip(config, client, access_token))]
-pub async fn shred<T>(thing: T, config: &Config, client: &Client, access_token: &str)
-where
-    T: Shred + Sync + Debug,
-{
-    thing.edit(client, access_token, config).await;
-    prevent_rate_limit().await;
-
-    thing.delete(client, access_token, config).await;
 }
 
 pub static LOREM_IPSUM: &str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
