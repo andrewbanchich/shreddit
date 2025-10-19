@@ -1,6 +1,6 @@
 use crate::things::{CommentIdSet, LOREM_IPSUM, PostIdSet, SubredditSet, ThingType};
-use chrono::{DateTime, Utc};
 use clap::Parser;
+use jiff::Zoned;
 use parse_datetime::parse_datetime;
 use std::path::PathBuf;
 use tracing::{debug, warn};
@@ -8,15 +8,14 @@ use tracing::{debug, warn};
 /// Parses relative timestamps to support:
 /// - Absolute timestamps (ISO 8601) → `2025-01-31T03:16:30Z`
 /// - [Negative durations](https://github.com/uutils/parse_datetime) (`-30 days`, `-2 weeks`, `-5 hours`)
-fn parse_relative(input: &str) -> Result<DateTime<Utc>, String> {
-    let relative = parse_datetime(input).map_err(|e| format!("invalid datetime {e}"))?;
-    let now = Utc::now();
+fn parse_relative(input: &str) -> Result<Zoned, String> {
+    let datetime = parse_datetime(input).map_err(|e| format!("invalid datetime {e}"))?;
 
-    if relative > now {
+    if datetime > Zoned::now() {
         return Err("relative datetimes must be before current time. please use either negative relative format (`-30 days`) or an absolute timestamp in the past".to_string());
     }
 
-    Ok(relative.with_timezone(&Utc))
+    Ok(datetime)
 }
 
 #[derive(Debug, Parser)]
@@ -51,11 +50,11 @@ pub struct Config {
 
     /// Delete items before a specific date or duration (e.g., `-30 days`).
     #[clap(long, env = "SHREDDIT_BEFORE", value_parser = parse_relative)]
-    pub before: Option<DateTime<Utc>>,
+    pub before: Option<Zoned>,
 
     /// Delete items after a specific date or duration (e.g., `-30 days`).
     #[clap(long, env = "SHREDDIT_AFTER", value_parser = parse_relative)]
-    pub after: Option<DateTime<Utc>>,
+    pub after: Option<Zoned>,
 
     #[clap(long, env = "SHREDDIT_MAX_SCORE")]
     pub max_score: Option<i64>,
@@ -133,7 +132,7 @@ mod tests {
 
     #[test]
     fn relative_datetime() {
-        let now = dbg!(Utc::now());
+        let now = dbg!(Zoned::now());
 
         let absolute_past = parse_relative("1996-12-19T16:39:57-08:00").unwrap();
         assert!(now > dbg!(absolute_past));
@@ -141,10 +140,10 @@ mod tests {
         let absolute_future = parse_relative("3000-12-19T16:39:57-08:00").unwrap_err();
         assert!(dbg!(absolute_future).contains("must be before current time"));
 
-        let relative_past = dbg!(parse_relative("-30 days").unwrap());
-        let delta_from_relative_format = now - dbg!(relative_past);
+        let past = dbg!(parse_relative("-30 days").unwrap());
+        let delta_from_past = now.duration_since(&past);
         // this will always be off by one because library rounds down. datetime is accurate.
-        assert_eq!(delta_from_relative_format.num_days(), 29);
+        assert_eq!(delta_from_past.as_hours(), 29 * 24);
 
         let relative_future = parse_relative("30 days").unwrap_err();
         assert!(dbg!(relative_future).contains("must be before current time"));

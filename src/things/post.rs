@@ -5,8 +5,8 @@ use crate::{
 };
 use async_stream::stream;
 use async_trait::async_trait;
-use chrono::{DateTime, Utc};
 use futures_core::Stream;
+use jiff::{Timestamp, Zoned, tz::TimeZone};
 use reqwest::{Client, header::HeaderMap};
 use serde::Deserialize;
 use serde_json::Value;
@@ -46,7 +46,7 @@ enum Source {
     // GDPR cols
     // id,permalink,date,ip,subreddit,gildings,title,url,body
     Gdpr {
-        date: DateTime<Utc>,
+        date: Zoned,
         subreddit: String,
     },
 }
@@ -61,12 +61,12 @@ impl Gdpr for Post {
 
 impl Post {
     /// The Reddit API uses floats for timestamps, which can't be deserialized to [`DateTime`]s. This converts the float to a datetime.
-    pub fn created(&self) -> DateTime<Utc> {
+    pub fn created(&self) -> Zoned {
         match &self.source {
-            Source::Api { created_utc, .. } => {
-                DateTime::from_timestamp(*created_utc as i64, 0).unwrap()
-            }
-            Source::Gdpr { date, .. } => *date,
+            Source::Api { created_utc, .. } => Timestamp::from_second(*created_utc as i64)
+                .unwrap()
+                .to_zoned(TimeZone::UTC),
+            Source::Gdpr { date, .. } => date.clone(),
         }
     }
 
@@ -75,46 +75,48 @@ impl Post {
     }
 
     fn should_skip(&self, config: &Config) -> bool {
-        if let Some(skip_post_ids) = &config.skip_post_ids {
-            if skip_post_ids.contains(&self.id) {
-                debug!("Skipping due to `skip_post_ids` filter");
-                return true;
-            }
-        }
-        if let Some(skip_subreddits) = &config.skip_subreddits {
-            if skip_subreddits.contains(&self.subreddit) {
-                debug!("Skipping due to `skip_subreddits` filter");
-                return true;
-            }
+        if let Some(skip_post_ids) = &config.skip_post_ids
+            && skip_post_ids.contains(&self.id)
+        {
+            debug!("Skipping due to `skip_post_ids` filter");
+            return true;
         }
 
-        if let Some(before) = config.before {
-            if self.created() >= before {
-                debug!("Skipping due to `before` filter ({before})");
-                return true;
-            }
+        if let Some(skip_subreddits) = &config.skip_subreddits
+            && skip_subreddits.contains(&self.subreddit)
+        {
+            debug!("Skipping due to `skip_subreddits` filter");
+            return true;
         }
-        if let Some(only_subreddits) = &config.only_subreddits {
-            if !only_subreddits.contains(&self.subreddit) {
-                debug!("Skipping due to `only_subreddits` filter");
-                return true;
-            }
+
+        if let Some(before) = &config.before
+            && self.created().duration_since(before).as_secs() >= 0
+        {
+            debug!("Skipping due to `before` filter ({before})");
+            return true;
+        }
+
+        if let Some(only_subreddits) = &config.only_subreddits
+            && !only_subreddits.contains(&self.subreddit)
+        {
+            debug!("Skipping due to `only_subreddits` filter");
+            return true;
         }
 
         match &self.source {
             Source::Api { score, .. } => {
-                if let Some(max_score) = config.max_score {
-                    if *score > max_score {
-                        debug!("Skipping due to `max_score` filter ({max_score})");
-                        return true;
-                    }
+                if let Some(max_score) = config.max_score
+                    && *score > max_score
+                {
+                    debug!("Skipping due to `max_score` filter ({max_score})");
+                    return true;
                 }
 
-                if let Some(after) = config.after {
-                    if self.created() <= after {
-                        debug!("Skipping due to `after` filter ({after})");
-                        return true;
-                    }
+                if let Some(after) = &config.after
+                    && self.created().duration_since(after).as_secs() <= 0
+                {
+                    debug!("Skipping due to `after` filter ({after})");
+                    return true;
                 }
             }
             Source::Gdpr { .. } => {
@@ -123,18 +125,18 @@ impl Post {
                     return true;
                 }
 
-                if let Some(before) = config.before {
-                    if self.created() >= before {
-                        debug!("Skipping due to `before` filter ({before})");
-                        return true;
-                    }
+                if let Some(before) = &config.before
+                    && self.created().duration_since(before).as_secs() >= 0
+                {
+                    debug!("Skipping due to `before` filter ({before})");
+                    return true;
                 }
 
-                if let Some(after) = config.after {
-                    if self.created() <= after {
-                        debug!("Skipping due to `after` filter ({after})");
-                        return true;
-                    }
+                if let Some(after) = &config.after
+                    && self.created().duration_since(after).as_secs() <= 0
+                {
+                    debug!("Skipping due to `after` filter ({after})");
+                    return true;
                 }
             }
         }
