@@ -87,23 +87,23 @@ impl Shred for SavedComment {
 
 impl SavedComment {
     fn should_skip(&self, config: &Config) -> bool {
-        if let Some(skip_comment_ids) = &config.skip_comment_ids {
-            if skip_comment_ids.contains(&self.id) {
-                debug!("Skipping due to `skip_comment_ids` filter");
-                return true;
-            }
+        if let Some(skip_comment_ids) = &config.skip_comment_ids
+            && skip_comment_ids.contains(&self.id)
+        {
+            debug!("Skipping due to `skip_comment_ids` filter");
+            return true;
         }
-        if let Some(skip_subreddits) = &config.skip_subreddits {
-            if skip_subreddits.contains(&self.subreddit) {
-                debug!("Skipping due to `skip_subreddits` filter");
-                return true;
-            }
+        if let Some(skip_subreddits) = &config.skip_subreddits
+            && skip_subreddits.contains(&self.subreddit)
+        {
+            debug!("Skipping due to `skip_subreddits` filter");
+            return true;
         }
-        if let Some(only_subreddits) = &config.only_subreddits {
-            if !only_subreddits.contains(&self.subreddit) {
-                debug!("Skipping due to `only_subreddits` filter");
-                return true;
-            }
+        if let Some(only_subreddits) = &config.only_subreddits
+            && !only_subreddits.contains(&self.subreddit)
+        {
+            debug!("Skipping due to `only_subreddits` filter");
+            return true;
         }
         false
     }
