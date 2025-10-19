@@ -142,8 +142,7 @@ mod tests {
 
         let past = dbg!(parse_relative("-30 days").unwrap());
         let delta_from_past = now.duration_since(&past);
-        // this will always be off by one because library rounds down. datetime is accurate.
-        assert_eq!(delta_from_past.as_hours(), 29 * 24);
+        assert_eq!(delta_from_past.as_hours(), 30 * 24 - 1);
 
         let relative_future = parse_relative("30 days").unwrap_err();
         assert!(dbg!(relative_future).contains("must be before current time"));
