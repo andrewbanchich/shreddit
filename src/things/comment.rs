@@ -308,12 +308,22 @@ impl Comment {
 
 /// https://www.reddit.com/dev/api/#GET_user_{username}_submitted
 #[instrument(level = "info", skip_all)]
-pub async fn list(client: &Client, config: &Config) -> impl Stream<Item = Comment> {
+pub async fn list(
+    client: &Client,
+    access_token: &str,
+    config: &Config,
+) -> impl Stream<Item = Comment> {
     info!("Fetching comments...");
 
     let username = config.username.to_owned();
     let client = client.clone();
     let user_agent = config.user_agent.clone();
+    let mut headers = HeaderMap::new();
+    headers.insert(
+        "Authorization",
+        format!("Bearer {access_token}").parse().unwrap(),
+    );
+    headers.insert("User-Agent", user_agent.parse().unwrap());
 
     stream! {
     let mut last_seen = None;
@@ -325,11 +335,11 @@ pub async fn list(client: &Client, config: &Config) -> impl Stream<Item = Commen
         "?limit=100".to_string()
     };
 
-    let uri = format!("https://reddit.com/user/{username}/comments.json{query_params}");
+    let uri = format!("https://oauth.reddit.com/user/{username}/comments.json{query_params}");
 
             let res: Response = client
         .get(&uri)
-        .header("User-Agent", user_agent.clone())
+        .headers(headers.clone())
         .send()
         .await
         .unwrap()
