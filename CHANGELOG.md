@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3](https://github.com/andrewbanchich/shreddit/compare/v1.1.2...v1.1.3) - 2025-10-19
+
+### Fixed
+
+- use oauth for listing posts/comments ([#235](https://github.com/andrewbanchich/shreddit/pull/235))
+
+### Other
+
+- bump serde from 1.0.223 to 1.0.228 ([#229](https://github.com/andrewbanchich/shreddit/pull/229))
+- bump clap from 4.5.47 to 4.5.49 ([#232](https://github.com/andrewbanchich/shreddit/pull/232))
+- bump parse_datetime from 0.11.0 to 0.13.1 ([#231](https://github.com/andrewbanchich/shreddit/pull/231))
+- bump reqwest from 0.12.23 to 0.12.24 ([#233](https://github.com/andrewbanchich/shreddit/pull/233))
+- bump tokio from 1.47.1 to 1.48.0 ([#234](https://github.com/andrewbanchich/shreddit/pull/234))
+- bump serde_json from 1.0.143 to 1.0.145 ([#221](https://github.com/andrewbanchich/shreddit/pull/221))
+
 ## [1.1.2](https://github.com/andrewbanchich/shreddit/compare/v1.1.1...v1.1.2) - 2025-09-11
 
 ### Other
