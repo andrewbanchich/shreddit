@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.6](https://github.com/andrewbanchich/shreddit/compare/v1.1.5...v1.1.6) - 2025-12-02
+
+### Other
+
+- bump tracing from 0.1.41 to 0.1.43 ([#254](https://github.com/andrewbanchich/shreddit/pull/254))
+
 ## [1.1.5](https://github.com/andrewbanchich/shreddit/compare/v1.1.4...v1.1.5) - 2025-10-19
 
 ### Other
