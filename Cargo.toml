@@ -25,4 +25,4 @@ tokio = { version = "1.48.0", features = ["rt", "macros"] }
 tracing = "0.1.43"
 tracing-subscriber = { version = "0.3.20", features = ["fmt", "env-filter"] }
 parse_datetime = "0.13.1"
-jiff = { version = "0.2.15", features = ["serde"] }
+jiff = { version = "0.2.16", features = ["serde"] }
