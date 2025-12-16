@@ -15,7 +15,7 @@ csv = "1.4.0"
 dotenvy = "0.15.7"
 futures-core = "0.3.31"
 futures-util = "0.3.28"
-reqwest = { version = "0.12.24", default-features = false, features = [
+reqwest = { version = "0.12.26", default-features = false, features = [
     "json",
     "rustls-tls",
 ] }
