@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.7](https://github.com/andrewbanchich/shreddit/compare/v1.1.6...v1.1.7) - 2026-01-11
+
+### Other
+
+- compile for macOS arm64 ([#248](https://github.com/andrewbanchich/shreddit/pull/248))
+
 ## [1.1.6](https://github.com/andrewbanchich/shreddit/compare/v1.1.5...v1.1.6) - 2026-01-11
 
 ### Other
