@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.6](https://github.com/andrewbanchich/shreddit/compare/v1.1.5...v1.1.6) - 2026-01-11
+
+### Other
+
+- bump actions/checkout from 5 to 6 ([#252](https://github.com/andrewbanchich/shreddit/pull/252))
+- bump jiff from 0.2.15 to 0.2.16 ([#247](https://github.com/andrewbanchich/shreddit/pull/247))
+- bump parse_datetime from 0.13.1 to 0.13.3 ([#251](https://github.com/andrewbanchich/shreddit/pull/251))
+- bump tracing-subscriber from 0.3.20 to 0.3.22 ([#253](https://github.com/andrewbanchich/shreddit/pull/253))
+- bump actions/cache from 4 to 5 ([#257](https://github.com/andrewbanchich/shreddit/pull/257))
+- bump reqwest from 0.12.24 to 0.12.26 ([#258](https://github.com/andrewbanchich/shreddit/pull/258))
+- bump tracing from 0.1.43 to 0.1.44 ([#259](https://github.com/andrewbanchich/shreddit/pull/259))
+- bump clap from 4.5.49 to 4.5.53 ([#250](https://github.com/andrewbanchich/shreddit/pull/250))
+- bump tracing from 0.1.41 to 0.1.43 ([#254](https://github.com/andrewbanchich/shreddit/pull/254))
+
 ## [1.1.5](https://github.com/andrewbanchich/shreddit/compare/v1.1.4...v1.1.5) - 2025-10-19
 
 ### Other
