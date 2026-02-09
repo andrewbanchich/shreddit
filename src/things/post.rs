@@ -197,51 +197,47 @@ pub async fn list(
     headers.insert("User-Agent", user_agent.parse().unwrap());
 
     stream! {
-    let mut last_seen = None;
+        let mut last_seen = None;
 
         loop {
-    let query_params = if let Some(last_seen) = last_seen {
-        format!("?after={last_seen}&limit=100")
-    } else {
-        "?limit=100".to_string()
-    };
+            let query_params = if let Some(last_seen) = last_seen {
+                format!("?after={last_seen}&limit=100")
+            } else {
+                "?limit=100".to_string()
+            };
 
-    let uri = format!("https://oauth.reddit.com/user/{username}/submitted.json{query_params}");
+            let uri = format!("https://oauth.reddit.com/user/{username}/submitted.json{query_params}");
 
             let res: PostRes = client
-        .get(&uri)
-        .headers(headers.clone())
-        .send()
-        .await
-        .unwrap()
-        .json()
-        .await
-        .unwrap();
+                    .get(&uri)
+                    .headers(headers.clone())
+                    .send()
+                    .await
+                    .unwrap()
+                    .json().await
+                    .unwrap();
 
-    match res {
-        PostRes::Success { data } => {
+            match res {
+                PostRes::Success { data } => {
+                    let results_len = data.children.len();
 
-    let results_len = data.children.len();
+                    debug!("Page contained {results_len} results");
 
-    debug!("Page contained {results_len} results");
+                    if results_len == 0 {
+                                break;
+                    } else {
+                                last_seen = data.children.last().map(|t| t.data.fullname());
+                    }
 
-    if results_len == 0 {
-                break;
-    } else {
-                last_seen = data.children.last().map(|t| t.data.fullname());
-    }
-
-    for comment in data.children {
-                yield comment.data;
-    }
-        }
-        PostRes::Error(e) => {
-    error!("{e:#?}");
-    break
-        }
-
-    }
-
+                    for comment in data.children {
+                                yield comment.data;
+                    }
+                }
+                PostRes::Error(e) => {
+                    error!("{e:#?}");
+                    break
+                }
+            }
         }
     }
 }

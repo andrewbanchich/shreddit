@@ -6,7 +6,7 @@ use futures_core::Stream;
 use reqwest::{Client, header::HeaderMap};
 use serde::Deserialize;
 use serde_json::Value;
-use tracing::{debug, error, info, instrument};
+use tracing::{debug, error, info, instrument, warn};
 
 use crate::{
     cli::Config,
@@ -141,15 +141,32 @@ pub async fn list(
 
     let uri = format!("https://oauth.reddit.com/user/{username}/saved.json?&type=comments{query_params}");
 
+    let res = client
+                .get(&uri)
+                .headers(headers.clone())
+                .send()
+                .await
+                .unwrap()
+                .json()
+                .await;
+
+    let res = match res {
+        Ok(res) => res,
+        Err(_e) => {
+            warn!("first attempt to list failed");
+
             let res: SavedCommentRes = client
-        .get(&uri)
-        .headers(headers.clone())
-        .send()
-        .await
-        .unwrap()
-        .json()
-        .await
-        .unwrap();
+                        .get(&uri)
+                        .headers(headers.clone())
+                        .send()
+                        .await
+                        .unwrap()
+                        .json()
+                        .await
+                        .unwrap();
+            res
+        }
+    };
 
     match res {
         SavedCommentRes::Success { data } => {
