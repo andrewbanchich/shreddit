@@ -12,8 +12,8 @@ use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberI
 use crate::{
     sources::gdpr,
     things::{
-        Comment, Friend, Post, SavedComment, SavedPost, ThingType, comment, post, saved_comment,
-        saved_post,
+        Comment, Friend, Post, SavedComment, SavedPost, ThingType, Upvoted, comment, post,
+        saved_comment, saved_post, upvoted,
     },
 };
 
@@ -91,6 +91,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             saved_comment.shred(&client, &access_token, &config).await;
                         }
                     }
+
+                    ThingType::Upvoted => {
+                        let upvoted = gdpr::list::<Upvoted>(export_path);
+
+                        for upvoted_post in upvoted {
+                            upvoted_post.shred(&client, &access_token, &config).await;
+                        }
+                    }
                 }
 
                 info!("Completed shredding {thing_type:?}");
@@ -142,6 +150,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
                         while let Some(saved_comment) = saved_comments.next().await {
                             saved_comment.shred(&client, &access_token, &config).await;
+                        }
+                    }
+
+                    ThingType::Upvoted => {
+                        let upvoted_posts = upvoted::list(&client, &access_token, &config).await;
+                        pin_mut!(upvoted_posts);
+
+                        while let Some(upvoted_post) = upvoted_posts.next().await {
+                            upvoted_post.shred(&client, &access_token, &config).await;
                         }
                     }
                 }
