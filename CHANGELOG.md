@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.9](https://github.com/andrewbanchich/shreddit/compare/v1.1.8...v1.1.9) - 2026-02-10
+
+### Fixed
+
+- handle error ([#271](https://github.com/andrewbanchich/shreddit/pull/271))
+
+### Other
+
+- bump clap from 4.5.54 to 4.5.57 ([#268](https://github.com/andrewbanchich/shreddit/pull/268))
+- bump jiff from 0.2.18 to 0.2.19 ([#269](https://github.com/andrewbanchich/shreddit/pull/269))
+
 ## [1.1.8](https://github.com/andrewbanchich/shreddit/compare/v1.1.7...v1.1.8) - 2026-02-04
 
 ### Other
