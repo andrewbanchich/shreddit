@@ -18,20 +18,60 @@ use super::Shred;
 #[derive(Debug, Deserialize)]
 pub struct UpvotedData {
     data: Upvoted,
-    #[allow(dead_code)]
     kind: String,
 }
 
-#[allow(unused)]
-#[derive(Debug, Deserialize)]
-pub struct Upvoted {
-    id: String,
-    subreddit: String,
-    permalink: String,
+impl UpvotedData {
+    fn with_type(mut self) -> Upvoted {
+        self.data.type_id = self.kind;
+        self.data
+    }
 }
 
-impl Gdpr for Upvoted {
-    const FILENAME: &'static str = "saved_comments.csv";
+#[allow(unused)]
+#[derive(Debug, Deserialize, Clone)]
+pub struct Upvoted {
+    id: String,
+    permalink: String,
+    #[serde(flatten)]
+    source: Source,
+    #[serde(skip)]
+    type_id: String,
+}
+
+#[allow(unused)]
+#[derive(Debug, Deserialize, Clone)]
+#[serde(untagged)]
+enum Source {
+    Api {
+        subreddit: String,
+    },
+    // GDPR columns: id,permalink,direction
+    // Note: We filter for direction="up" when reading
+    Gdpr {},
+}
+
+// Vote struct for reading from GDPR vote CSV files
+#[derive(Debug, Deserialize)]
+pub struct Vote {
+    pub id: String,
+    pub permalink: String,
+    pub direction: String,
+}
+
+impl Vote {
+    pub fn into_upvoted(self, type_id: String) -> Upvoted {
+        Upvoted {
+            id: self.id,
+            permalink: self.permalink,
+            source: Source::Gdpr {},
+            type_id,
+        }
+    }
+}
+
+impl Gdpr for Vote {
+    const FILENAME: &'static str = "post_votes.csv";
 }
 
 impl Api for Upvoted {
@@ -40,7 +80,14 @@ impl Api for Upvoted {
 
 impl Upvoted {
     fn fullname(&self) -> String {
-        format!("{}_{}", Self::TYPE_ID, self.id)
+        format!("{}_{}", self.type_id, self.id)
+    }
+
+    fn subreddit(&self) -> Option<&str> {
+        match &self.source {
+            Source::Api { subreddit } => Some(subreddit),
+            Source::Gdpr {} => None,
+        }
     }
 }
 
@@ -67,7 +114,7 @@ impl Shred for Upvoted {
         headers.insert("User-Agent", config.user_agent.parse().unwrap());
 
         let params = HashMap::from([
-            ("id", format!("{}_{}", Self::TYPE_ID, self.id)),
+            ("id", self.fullname()),
             ("dir", "0".to_string()),
         ]);
 
@@ -95,18 +142,25 @@ impl Upvoted {
             debug!("Skipping due to `skip_comment_ids` filter");
             return true;
         }
-        if let Some(skip_subreddits) = &config.skip_subreddits
-            && skip_subreddits.contains(&self.subreddit)
-        {
-            debug!("Skipping due to `skip_subreddits` filter");
-            return true;
+
+        // Subreddit filters only work with API data
+        if let Some(subreddit) = self.subreddit() {
+            if let Some(skip_subreddits) = &config.skip_subreddits
+                && skip_subreddits.contains(subreddit)
+            {
+                debug!("Skipping due to `skip_subreddits` filter");
+                return true;
+            }
+            if let Some(only_subreddits) = &config.only_subreddits
+                && !only_subreddits.contains(subreddit)
+            {
+                debug!("Skipping due to `only_subreddits` filter");
+                return true;
+            }
+        } else if config.skip_subreddits.is_some() || config.only_subreddits.is_some() {
+            debug!("Cannot filter by subreddit when using GDPR data");
         }
-        if let Some(only_subreddits) = &config.only_subreddits
-            && !only_subreddits.contains(&self.subreddit)
-        {
-            debug!("Skipping due to `only_subreddits` filter");
-            return true;
-        }
+
         false
     }
 }
@@ -180,11 +234,15 @@ pub async fn list(
     if results_len == 0 {
                 break;
     } else {
-                last_seen = data.children.last().map(|t| t.data.fullname());
+                last_seen = data.children.last().map(|t| {
+                    let mut item = t.data.clone();
+                    item.type_id = t.kind.clone();
+                    item.fullname()
+                });
     }
 
-    for comment in data.children {
-                yield comment.data;
+    for item in data.children {
+                yield item.with_type();
     }
         }
         UpvotedRes::Error(e) => {

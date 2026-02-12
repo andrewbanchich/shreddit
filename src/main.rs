@@ -12,7 +12,7 @@ use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberI
 use crate::{
     sources::gdpr,
     things::{
-        Comment, Friend, Post, SavedComment, SavedPost, ThingType, Upvoted, comment, post,
+        Comment, Friend, Post, SavedComment, SavedPost, ThingType, Vote, comment, post,
         saved_comment, saved_post, upvoted,
     },
 };
@@ -93,10 +93,38 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     }
 
                     ThingType::Upvoted => {
-                        let upvoted = gdpr::list::<Upvoted>(export_path);
+                        use csv::Reader;
 
-                        for upvoted_post in upvoted {
-                            upvoted_post.shred(&client, &access_token, &config).await;
+                        info!("Processing post votes...");
+                        let mut post_votes_path = export_path.clone();
+                        post_votes_path.push("post_votes.csv");
+
+                        if post_votes_path.exists() {
+                            let reader = Reader::from_path(&post_votes_path).unwrap();
+                            let post_votes = reader.into_deserialize::<Vote>().map(|f| f.unwrap());
+
+                            for vote in post_votes.filter(|v| v.direction == "up") {
+                                let upvoted = vote.into_upvoted("t3".to_string());
+                                upvoted.shred(&client, &access_token, &config).await;
+                            }
+                        } else {
+                            info!("No post_votes.csv found");
+                        }
+
+                        info!("Processing comment votes...");
+                        let mut comment_votes_path = export_path.clone();
+                        comment_votes_path.push("comment_votes.csv");
+
+                        if comment_votes_path.exists() {
+                            let reader = Reader::from_path(&comment_votes_path).unwrap();
+                            let comment_votes = reader.into_deserialize::<Vote>().map(|f| f.unwrap());
+
+                            for vote in comment_votes.filter(|v| v.direction == "up") {
+                                let upvoted = vote.into_upvoted("t1".to_string());
+                                upvoted.shred(&client, &access_token, &config).await;
+                            }
+                        } else {
+                            info!("No comment_votes.csv found");
                         }
                     }
                 }
