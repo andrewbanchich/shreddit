@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.9](https://github.com/andrewbanchich/shreddit/compare/v1.1.8...v1.1.9) - 2026-03-02
+
+### Fixed
+
+- handle error ([#271](https://github.com/andrewbanchich/shreddit/pull/271))
+
+### Other
+
+- bump parse_datetime from 0.13.3 to 0.14.0 ([#279](https://github.com/andrewbanchich/shreddit/pull/279))
+- bump futures-core from 0.3.31 to 0.3.32 ([#280](https://github.com/andrewbanchich/shreddit/pull/280))
+- bump clap from 4.5.57 to 4.5.60 ([#283](https://github.com/andrewbanchich/shreddit/pull/283))
+- bump jiff from 0.2.19 to 0.2.22 ([#285](https://github.com/andrewbanchich/shreddit/pull/285))
+- - added http2 to reqwest configuration to satisfy reddit API ([#281](https://github.com/andrewbanchich/shreddit/pull/281))
+- bump clap from 4.5.54 to 4.5.57 ([#268](https://github.com/andrewbanchich/shreddit/pull/268))
+- bump jiff from 0.2.18 to 0.2.19 ([#269](https://github.com/andrewbanchich/shreddit/pull/269))
+
 ## [1.1.8](https://github.com/andrewbanchich/shreddit/compare/v1.1.7...v1.1.8) - 2026-02-04
 
 ### Other
