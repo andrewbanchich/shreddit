@@ -1,0 +1,211 @@
+use std::collections::HashMap;
+
+use async_stream::stream;
+use async_trait::async_trait;
+use futures_core::Stream;
+use reqwest::{Client, header::HeaderMap};
+use serde::Deserialize;
+use serde_json::Value;
+use tracing::{debug, error, info, instrument, warn};
+
+use crate::{
+    cli::Config,
+    sources::{api::Api, gdpr::Gdpr},
+};
+
+use super::Shred;
+
+#[derive(Debug, Deserialize)]
+pub struct UpvotedData {
+    data: Upvoted,
+    #[allow(dead_code)]
+    kind: String,
+}
+
+#[allow(unused)]
+#[derive(Debug, Deserialize)]
+pub struct Upvoted {
+    id: String,
+    subreddit: String,
+    permalink: String,
+}
+
+impl Gdpr for Upvoted {
+    const FILENAME: &'static str = "saved_comments.csv";
+}
+
+impl Api for Upvoted {
+    const TYPE_ID: &'static str = "t3";
+}
+
+impl Upvoted {
+    fn fullname(&self) -> String {
+        format!("{}_{}", Self::TYPE_ID, self.id)
+    }
+}
+
+#[async_trait]
+impl Shred for Upvoted {
+    #[instrument(level = "info", skip(client, access_token))]
+    async fn delete(&self, client: &Client, access_token: &str, config: &Config) {
+        info!("Deleting...");
+
+        if self.should_skip(config) {
+            return;
+        }
+
+        if config.should_prevent_deletion() {
+            return;
+        }
+
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            "Authorization",
+            format!("Bearer {access_token}").parse().unwrap(),
+        );
+
+        headers.insert("User-Agent", config.user_agent.parse().unwrap());
+
+        let params = HashMap::from([
+            ("id", format!("{}_{}", Self::TYPE_ID, self.id)),
+            ("dir", "0".to_string()),
+        ]);
+
+        let res = client
+            .post("https://oauth.reddit.com/api/vote")
+            .headers(headers)
+            .form(&params)
+            .send()
+            .await
+            .unwrap();
+
+        if !res.status().is_success() {
+            error!("{:#?}", res.text().await.unwrap());
+        }
+
+        self.prevent_rate_limit().await;
+    }
+}
+
+impl Upvoted {
+    fn should_skip(&self, config: &Config) -> bool {
+        if let Some(skip_comment_ids) = &config.skip_comment_ids
+            && skip_comment_ids.contains(&self.id)
+        {
+            debug!("Skipping due to `skip_comment_ids` filter");
+            return true;
+        }
+        if let Some(skip_subreddits) = &config.skip_subreddits
+            && skip_subreddits.contains(&self.subreddit)
+        {
+            debug!("Skipping due to `skip_subreddits` filter");
+            return true;
+        }
+        if let Some(only_subreddits) = &config.only_subreddits
+            && !only_subreddits.contains(&self.subreddit)
+        {
+            debug!("Skipping due to `only_subreddits` filter");
+            return true;
+        }
+        false
+    }
+}
+
+/// https://www.reddit.com/dev/api/#GET_user_{username}_saved
+#[instrument(level = "info", skip_all)]
+pub async fn list(
+    client: &Client,
+    access_token: &str,
+    config: &Config,
+) -> impl Stream<Item = Upvoted> {
+    info!("Fetching posts...");
+
+    let client = client.clone();
+    let username = config.username.clone();
+    let user_agent = config.user_agent.clone();
+    let mut headers = HeaderMap::new();
+    headers.insert(
+        "Authorization",
+        format!("Bearer {access_token}").parse().unwrap(),
+    );
+
+    headers.insert("User-Agent", user_agent.parse().unwrap());
+
+    stream! {
+    let mut last_seen = None;
+
+        loop {
+    let query_params = if let Some(last_seen) = last_seen {
+        format!("&after={last_seen}")
+    } else {
+        String::new()
+    };
+
+    let uri = format!("https://oauth.reddit.com/user/{username}/upvoted?{query_params}");
+
+    let res = client
+                .get(&uri)
+                .headers(headers.clone())
+                .send()
+                .await
+                .unwrap()
+                .json()
+                .await;
+
+    let res = match res {
+        Ok(res) => res,
+        Err(_e) => {
+            warn!("first attempt to list failed");
+
+            let res: UpvotedRes = client
+                        .get(&uri)
+                        .headers(headers.clone())
+                        .send()
+                        .await
+                        .unwrap()
+                        .json()
+                        .await
+                        .unwrap();
+            res
+        }
+    };
+
+    match res {
+        UpvotedRes::Success { data } => {
+
+    let results_len = data.children.len();
+
+    debug!("Page contained {results_len} results");
+
+    if results_len == 0 {
+                break;
+    } else {
+                last_seen = data.children.last().map(|t| t.data.fullname());
+    }
+
+    for comment in data.children {
+                yield comment.data;
+    }
+        }
+        UpvotedRes::Error(e) => {
+    error!("{e:#?}");
+    break
+        }
+
+    }
+
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+enum UpvotedRes {
+    Success { data: UpvotedResData },
+    Error(Value),
+}
+
+#[derive(Debug, Deserialize)]
+pub struct UpvotedResData {
+    pub children: Vec<UpvotedData>,
+}

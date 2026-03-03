@@ -13,6 +13,9 @@ pub use saved_post::*;
 pub mod saved_comment;
 pub use saved_comment::*;
 
+pub mod upvoted;
+pub use upvoted::*;
+
 use clap::ValueEnum;
 use reqwest::Client;
 use serde::Deserialize;
@@ -61,6 +64,7 @@ pub enum ThingType {
     Friends,
     SavedPosts,
     SavedComments,
+    Upvoted,
 }
 
 impl FromStr for ThingType {
