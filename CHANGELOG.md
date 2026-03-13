@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.10](https://github.com/andrewbanchich/shreddit/compare/v1.1.9...v1.1.10) - 2026-03-13
+
+### Other
+
+- bump futures-util from 0.3.31 to 0.3.32 ([#286](https://github.com/andrewbanchich/shreddit/pull/286))
+- bump tokio from 1.49.0 to 1.50.0 ([#287](https://github.com/andrewbanchich/shreddit/pull/287))
+- bump jiff from 0.2.22 to 0.2.23 ([#288](https://github.com/andrewbanchich/shreddit/pull/288))
+- bump quinn-proto from 0.11.9 to 0.11.14 ([#289](https://github.com/andrewbanchich/shreddit/pull/289))
+- bump clap from 4.5.60 to 4.6.0 ([#290](https://github.com/andrewbanchich/shreddit/pull/290))
+
 ## [1.1.9](https://github.com/andrewbanchich/shreddit/compare/v1.1.8...v1.1.9) - 2026-03-02
 
 ### Fixed
