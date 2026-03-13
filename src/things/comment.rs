@@ -37,8 +37,18 @@ enum Source {
     // GDPR columns
     // id,permalink,date,ip,subreddit,gildings,link,parent,body,media
     Gdpr {
+        #[serde(deserialize_with = "crate::sources::gdpr::date::deserialize")]
         date: Zoned,
-        subreddit: String,
+        #[allow(dead_code)]
+        ip: Option<String>,
+        #[allow(dead_code)]
+        gildings: Option<i64>,
+        #[allow(dead_code)]
+        link: Option<String>,
+        #[allow(dead_code)]
+        parent: Option<String>,
+        #[allow(dead_code)]
+        media: Option<String>,
     },
 }
 
