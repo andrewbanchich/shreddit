@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.11](https://github.com/andrewbanchich/shreddit/compare/v1.1.10...v1.1.11) - 2026-04-21
+
+### Other
+
+- bump tracing-subscriber from 0.3.22 to 0.3.23 ([#292](https://github.com/andrewbanchich/shreddit/pull/292))
+- bump rand from 0.9.2 to 0.9.4 ([#295](https://github.com/andrewbanchich/shreddit/pull/295))
+- bump tokio from 1.50.0 to 1.52.1 ([#297](https://github.com/andrewbanchich/shreddit/pull/297))
+- bump clap from 4.6.0 to 4.6.1 ([#298](https://github.com/andrewbanchich/shreddit/pull/298))
+
 ## [1.1.10](https://github.com/andrewbanchich/shreddit/compare/v1.1.9...v1.1.10) - 2026-03-13
 
 ### Other
