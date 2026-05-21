@@ -12,9 +12,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+          - codeberg-tiny
 
     steps:
       - uses: actions/checkout@v6
