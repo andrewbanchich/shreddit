@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.12](https://github.com/andrewbanchich/shreddit/compare/v1.1.11...v1.1.12) - 2026-05-22
+
+### Other
+
+- bump serde_json from 1.0.149 to 1.0.150 ([#305](https://github.com/andrewbanchich/shreddit/pull/305))
+- bump deps ([#304](https://github.com/andrewbanchich/shreddit/pull/304))
+- bump tokio from 1.52.1 to 1.52.3 ([#303](https://github.com/andrewbanchich/shreddit/pull/303))
+- bump jiff from 0.2.23 to 0.2.24 ([#300](https://github.com/andrewbanchich/shreddit/pull/300))
+
 ## [1.1.11](https://github.com/andrewbanchich/shreddit/compare/v1.1.10...v1.1.11) - 2026-04-21
 
 ### Other
