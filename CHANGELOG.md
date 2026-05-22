@@ -1,176 +1,262 @@
-# Changelog
+## [1.1.12] - 2026-05-25
 
-All notable changes to this project will be documented in this file.
+### ⚙️ Miscellaneous Tasks
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+- Bump jiff from 0.2.23 to 0.2.24 (#300)
+- Bump tokio from 1.52.1 to 1.52.3 (#303)
+- Bump deps (#304)
+- Remove mac and windows targets
+- Use github urls in Actions
+- Bump deps
+## [1.1.11] - 2026-04-21
 
-## [Unreleased]
+### ⚙️ Miscellaneous Tasks
 
-## [1.1.11](https://github.com/andrewbanchich/shreddit/compare/v1.1.10...v1.1.11) - 2026-04-21
+- Bump clap from 4.6.0 to 4.6.1 (#298)
+- Bump tokio from 1.50.0 to 1.52.1 (#297)
+- Bump rand from 0.9.2 to 0.9.4 (#295)
+- Bump tracing-subscriber from 0.3.22 to 0.3.23 (#292)
+- Release v1.1.11 (#299)
+## [1.1.10] - 2026-03-13
 
-### Other
+### ⚙️ Miscellaneous Tasks
 
-- bump tracing-subscriber from 0.3.22 to 0.3.23 ([#292](https://github.com/andrewbanchich/shreddit/pull/292))
-- bump rand from 0.9.2 to 0.9.4 ([#295](https://github.com/andrewbanchich/shreddit/pull/295))
-- bump tokio from 1.50.0 to 1.52.1 ([#297](https://github.com/andrewbanchich/shreddit/pull/297))
-- bump clap from 4.6.0 to 4.6.1 ([#298](https://github.com/andrewbanchich/shreddit/pull/298))
+- Bump clap from 4.5.60 to 4.6.0 (#290)
+- Bump quinn-proto from 0.11.9 to 0.11.14 (#289)
+- Bump jiff from 0.2.22 to 0.2.23 (#288)
+- Bump tokio from 1.49.0 to 1.50.0 (#287)
+- Bump futures-util from 0.3.31 to 0.3.32 (#286)
+- Release v1.1.10 (#291)
+## [1.1.9] - 2026-03-02
 
-## [1.1.10](https://github.com/andrewbanchich/shreddit/compare/v1.1.9...v1.1.10) - 2026-03-13
+### 🐛 Bug Fixes
 
-### Other
+- Handle error (#271)
 
-- bump futures-util from 0.3.31 to 0.3.32 ([#286](https://github.com/andrewbanchich/shreddit/pull/286))
-- bump tokio from 1.49.0 to 1.50.0 ([#287](https://github.com/andrewbanchich/shreddit/pull/287))
-- bump jiff from 0.2.22 to 0.2.23 ([#288](https://github.com/andrewbanchich/shreddit/pull/288))
-- bump quinn-proto from 0.11.9 to 0.11.14 ([#289](https://github.com/andrewbanchich/shreddit/pull/289))
-- bump clap from 4.5.60 to 4.6.0 ([#290](https://github.com/andrewbanchich/shreddit/pull/290))
+### ⚙️ Miscellaneous Tasks
 
-## [1.1.9](https://github.com/andrewbanchich/shreddit/compare/v1.1.8...v1.1.9) - 2026-03-02
+- Bump jiff from 0.2.18 to 0.2.19 (#269)
+- Bump clap from 4.5.54 to 4.5.57 (#268)
+- Bump jiff from 0.2.19 to 0.2.22 (#285)
+- Bump clap from 4.5.57 to 4.5.60 (#283)
+- Bump futures-core from 0.3.31 to 0.3.32 (#280)
+- Bump parse_datetime from 0.13.3 to 0.14.0 (#279)
+- Release v1.1.9 (#272)
+## [1.1.8] - 2026-02-04
 
-### Fixed
+### ⚙️ Miscellaneous Tasks
 
-- handle error ([#271](https://github.com/andrewbanchich/shreddit/pull/271))
+- Bump bytes from 1.10.1 to 1.11.1 (#266)
+- Bump jiff from 0.2.16 to 0.2.18 (#265)
+- Bump reqwest from 0.12.26 to 0.12.28 (#263)
+- Bump clap from 4.5.53 to 4.5.54 (#264)
+- Bump tokio from 1.48.0 to 1.49.0 (#262)
+- Bump serde_json from 1.0.145 to 1.0.149 (#261)
+- Release v1.1.8 (#267)
+## [1.1.7] - 2026-01-11
 
-### Other
+### ⚙️ Miscellaneous Tasks
 
-- bump parse_datetime from 0.13.3 to 0.14.0 ([#279](https://github.com/andrewbanchich/shreddit/pull/279))
-- bump futures-core from 0.3.31 to 0.3.32 ([#280](https://github.com/andrewbanchich/shreddit/pull/280))
-- bump clap from 4.5.57 to 4.5.60 ([#283](https://github.com/andrewbanchich/shreddit/pull/283))
-- bump jiff from 0.2.19 to 0.2.22 ([#285](https://github.com/andrewbanchich/shreddit/pull/285))
-- - added http2 to reqwest configuration to satisfy reddit API ([#281](https://github.com/andrewbanchich/shreddit/pull/281))
-- bump clap from 4.5.54 to 4.5.57 ([#268](https://github.com/andrewbanchich/shreddit/pull/268))
-- bump jiff from 0.2.18 to 0.2.19 ([#269](https://github.com/andrewbanchich/shreddit/pull/269))
+- Compile for macOS arm64 (#248)
+- Release v1.1.7 (#260)
+## [1.1.6] - 2026-01-11
 
-## [1.1.8](https://github.com/andrewbanchich/shreddit/compare/v1.1.7...v1.1.8) - 2026-02-04
+### ⚙️ Miscellaneous Tasks
 
-### Other
+- Bump tracing from 0.1.41 to 0.1.43 (#254)
+- Bump clap from 4.5.49 to 4.5.53 (#250)
+- Bump tracing from 0.1.43 to 0.1.44 (#259)
+- Bump reqwest from 0.12.24 to 0.12.26 (#258)
+- Bump actions/cache from 4 to 5 (#257)
+- Bump tracing-subscriber from 0.3.20 to 0.3.22 (#253)
+- Bump parse_datetime from 0.13.1 to 0.13.3 (#251)
+- Bump jiff from 0.2.15 to 0.2.16 (#247)
+- Bump actions/checkout from 5 to 6 (#252)
+- Release v1.1.6 (#255)
+## [1.1.5] - 2025-10-19
 
-- bump serde_json from 1.0.145 to 1.0.149 ([#261](https://github.com/andrewbanchich/shreddit/pull/261))
-- bump tokio from 1.48.0 to 1.49.0 ([#262](https://github.com/andrewbanchich/shreddit/pull/262))
-- bump clap from 4.5.53 to 4.5.54 ([#264](https://github.com/andrewbanchich/shreddit/pull/264))
-- bump reqwest from 0.12.26 to 0.12.28 ([#263](https://github.com/andrewbanchich/shreddit/pull/263))
-- bump jiff from 0.2.16 to 0.2.18 ([#265](https://github.com/andrewbanchich/shreddit/pull/265))
+### 🚜 Refactor
 
-## [1.1.7](https://github.com/andrewbanchich/shreddit/compare/v1.1.6...v1.1.7) - 2026-01-11
+- Remove unused
 
-### Other
+### ⚙️ Miscellaneous Tasks
 
-- compile for macOS arm64 ([#248](https://github.com/andrewbanchich/shreddit/pull/248))
+- Bump csv from 1.3.1 to 1.4.0 (#241)
+- Remove workflow (#243)
+- Release v1.1.5 (#242)
+## [1.1.4] - 2025-10-19
 
-## [1.1.6](https://github.com/andrewbanchich/shreddit/compare/v1.1.5...v1.1.6) - 2026-01-11
+### 🐛 Bug Fixes
 
-### Other
+- Test (#237)
 
-- bump actions/checkout from 5 to 6 ([#252](https://github.com/andrewbanchich/shreddit/pull/252))
-- bump jiff from 0.2.15 to 0.2.16 ([#247](https://github.com/andrewbanchich/shreddit/pull/247))
-- bump parse_datetime from 0.13.1 to 0.13.3 ([#251](https://github.com/andrewbanchich/shreddit/pull/251))
-- bump tracing-subscriber from 0.3.20 to 0.3.22 ([#253](https://github.com/andrewbanchich/shreddit/pull/253))
-- bump actions/cache from 4 to 5 ([#257](https://github.com/andrewbanchich/shreddit/pull/257))
-- bump reqwest from 0.12.24 to 0.12.26 ([#258](https://github.com/andrewbanchich/shreddit/pull/258))
-- bump tracing from 0.1.43 to 0.1.44 ([#259](https://github.com/andrewbanchich/shreddit/pull/259))
-- bump clap from 4.5.49 to 4.5.53 ([#250](https://github.com/andrewbanchich/shreddit/pull/250))
-- bump tracing from 0.1.41 to 0.1.43 ([#254](https://github.com/andrewbanchich/shreddit/pull/254))
+### ⚙️ Miscellaneous Tasks
 
-## [1.1.5](https://github.com/andrewbanchich/shreddit/compare/v1.1.4...v1.1.5) - 2025-10-19
+- Release v1.1.4 (#238)
+## [1.1.3] - 2025-10-19
 
-### Other
+### 🐛 Bug Fixes
 
-- Change default branch from 'master' to 'main'
-- bump csv from 1.3.1 to 1.4.0 ([#241](https://github.com/andrewbanchich/shreddit/pull/241))
-- remove unused
+- Use oauth for listing posts/comments (#235)
+- Fix compilation due to breaking types (#236)
 
-## [1.1.4](https://github.com/andrewbanchich/shreddit/compare/v1.1.3...v1.1.4) - 2025-10-19
+### ⚙️ Miscellaneous Tasks
 
-### Fixed
+- Bump serde_json from 1.0.143 to 1.0.145 (#221)
+- Bump tokio from 1.47.1 to 1.48.0 (#234)
+- Bump reqwest from 0.12.23 to 0.12.24 (#233)
+- Bump parse_datetime from 0.11.0 to 0.13.1 (#231)
+- Bump clap from 4.5.47 to 4.5.49 (#232)
+- Bump serde from 1.0.223 to 1.0.228 (#229)
+- Release v1.1.3 (#224)
+## [1.1.2] - 2025-09-11
 
-- test ([#237](https://github.com/andrewbanchich/shreddit/pull/237))
+### ⚙️ Miscellaneous Tasks
 
-## [1.1.3](https://github.com/andrewbanchich/shreddit/compare/v1.1.2...v1.1.3) - 2025-10-19
+- Bump tokio from 1.44.2 to 1.45.0 (#183)
+- Bump reqwest from 0.12.15 to 0.12.22 (#196)
+- Bump tokio from 1.45.0 to 1.47.1 (#204)
+- Bump clap from 4.5.37 to 4.5.43 (#206)
+- Bump clap from 4.5.43 to 4.5.44 (#207)
+- Bump serde_json from 1.0.140 to 1.0.142 (#203)
+- Bump parse_datetime from 0.9.0 to 0.11.0 (#205)
+- Bump reqwest from 0.12.22 to 0.12.23 (#208)
+- Bump tracing-subscriber from 0.3.19 to 0.3.20 (#216)
+- Bump chrono from 0.4.41 to 0.4.42 (#218)
+- Bump actions/checkout from 4 to 5 (#212)
+- Bump clap from 4.5.44 to 4.5.47 (#217)
+- Bump serde_json from 1.0.142 to 1.0.143 (#213)
+- Bump async-trait from 0.1.88 to 0.1.89 (#210)
+- Bump amannn/action-semantic-pull-request from 5 to 6 (#211)
+- Release v1.1.2 (#184)
+## [1.1.1] - 2025-04-30
 
-### Fixed
+### 🐛 Bug Fixes
 
-- use oauth for listing posts/comments ([#235](https://github.com/andrewbanchich/shreddit/pull/235))
+- Use consistent sorting to ensure all comments captured (#180)
 
-### Other
+### 📚 Documentation
 
-- bump serde from 1.0.223 to 1.0.228 ([#229](https://github.com/andrewbanchich/shreddit/pull/229))
-- bump clap from 4.5.47 to 4.5.49 ([#232](https://github.com/andrewbanchich/shreddit/pull/232))
-- bump parse_datetime from 0.11.0 to 0.13.1 ([#231](https://github.com/andrewbanchich/shreddit/pull/231))
-- bump reqwest from 0.12.23 to 0.12.24 ([#233](https://github.com/andrewbanchich/shreddit/pull/233))
-- bump tokio from 1.47.1 to 1.48.0 ([#234](https://github.com/andrewbanchich/shreddit/pull/234))
-- bump serde_json from 1.0.143 to 1.0.145 ([#221](https://github.com/andrewbanchich/shreddit/pull/221))
+- Update usage output to document valid arguments (#179)
 
-## [1.1.2](https://github.com/andrewbanchich/shreddit/compare/v1.1.1...v1.1.2) - 2025-09-11
+### ⚙️ Miscellaneous Tasks
 
-### Other
+- Bump serde from 1.0.218 to 1.0.219 (#160)
+- Bump clap from 4.5.31 to 4.5.32
+- Bump reqwest from 0.12.12 to 0.12.13 (#164)
+- Bump tokio from 1.44.0 to 1.44.1 (#166)
+- Bump reqwest from 0.12.13 to 0.12.14 (#165)
+- Bump async-trait from 0.1.87 to 0.1.88 (#167)
+- Bump reqwest from 0.12.14 to 0.12.15 (#168)
+- Bump clap from 4.5.32 to 4.5.33 (#170)
+- Bump clap from 4.5.33 to 4.5.36 (#174)
+- Bump clap from 4.5.36 to 4.5.37 (#177)
+- Bump tokio from 1.44.1 to 1.44.2 (#173)
+- Bump parse_datetime from 0.8.0 to 0.9.0 (#181)
+- Bump chrono from 0.4.40 to 0.4.41 (#182)
+- Release v1.1.1 (#161)
+## [1.1.0] - 2025-03-09
 
-- bump amannn/action-semantic-pull-request from 5 to 6 ([#211](https://github.com/andrewbanchich/shreddit/pull/211))
-- bump async-trait from 0.1.88 to 0.1.89 ([#210](https://github.com/andrewbanchich/shreddit/pull/210))
-- bump serde_json from 1.0.142 to 1.0.143 ([#213](https://github.com/andrewbanchich/shreddit/pull/213))
-- bump clap from 4.5.44 to 4.5.47 ([#217](https://github.com/andrewbanchich/shreddit/pull/217))
-- bump actions/checkout from 4 to 5 ([#212](https://github.com/andrewbanchich/shreddit/pull/212))
-- bump chrono from 0.4.41 to 0.4.42 ([#218](https://github.com/andrewbanchich/shreddit/pull/218))
-- bump tracing-subscriber from 0.3.19 to 0.3.20 ([#216](https://github.com/andrewbanchich/shreddit/pull/216))
-- bump reqwest from 0.12.22 to 0.12.23 ([#208](https://github.com/andrewbanchich/shreddit/pull/208))
-- bump parse_datetime from 0.9.0 to 0.11.0 ([#205](https://github.com/andrewbanchich/shreddit/pull/205))
-- bump serde_json from 1.0.140 to 1.0.142 ([#203](https://github.com/andrewbanchich/shreddit/pull/203))
-- bump clap from 4.5.43 to 4.5.44 ([#207](https://github.com/andrewbanchich/shreddit/pull/207))
-- bump clap from 4.5.37 to 4.5.43 ([#206](https://github.com/andrewbanchich/shreddit/pull/206))
-- bump tokio from 1.45.0 to 1.47.1 ([#204](https://github.com/andrewbanchich/shreddit/pull/204))
-- bump reqwest from 0.12.15 to 0.12.22 ([#196](https://github.com/andrewbanchich/shreddit/pull/196))
-- bump tokio from 1.44.2 to 1.45.0 ([#183](https://github.com/andrewbanchich/shreddit/pull/183))
+### 🚀 Features
 
-## [1.1.1](https://github.com/andrewbanchich/shreddit/compare/v1.1.0...v1.1.1) - 2025-04-30
+- Support relative timestamps in --after filters
 
-### Fixed
+### 📚 Documentation
 
-- use consistent sorting to ensure all comments captured ([#180](https://github.com/andrewbanchich/shreddit/pull/180))
+- Update doc comment for relative timestamps
 
-### Other
+### ⚙️ Miscellaneous Tasks
 
-- Update usage output to document valid arguments ([#179](https://github.com/andrewbanchich/shreddit/pull/179))
-- bump chrono from 0.4.40 to 0.4.41 ([#182](https://github.com/andrewbanchich/shreddit/pull/182))
-- bump parse_datetime from 0.8.0 to 0.9.0 ([#181](https://github.com/andrewbanchich/shreddit/pull/181))
-- bump tokio from 1.44.1 to 1.44.2 ([#173](https://github.com/andrewbanchich/shreddit/pull/173))
-- bump clap from 4.5.36 to 4.5.37 ([#177](https://github.com/andrewbanchich/shreddit/pull/177))
-- bump clap from 4.5.33 to 4.5.36 ([#174](https://github.com/andrewbanchich/shreddit/pull/174))
-- bump clap from 4.5.32 to 4.5.33 ([#170](https://github.com/andrewbanchich/shreddit/pull/170))
-- bump reqwest from 0.12.14 to 0.12.15 ([#168](https://github.com/andrewbanchich/shreddit/pull/168))
-- bump async-trait from 0.1.87 to 0.1.88 ([#167](https://github.com/andrewbanchich/shreddit/pull/167))
-- bump reqwest from 0.12.13 to 0.12.14 ([#165](https://github.com/andrewbanchich/shreddit/pull/165))
-- bump tokio from 1.44.0 to 1.44.1 ([#166](https://github.com/andrewbanchich/shreddit/pull/166))
-- bump reqwest from 0.12.12 to 0.12.13 ([#164](https://github.com/andrewbanchich/shreddit/pull/164))
-- bump clap from 4.5.31 to 4.5.32
-- bump serde from 1.0.218 to 1.0.219 ([#160](https://github.com/andrewbanchich/shreddit/pull/160))
+- Rename variable
+- Release v1.1.0 (#159)
+## [1.0.2] - 2025-03-09
 
-## [1.1.0](https://github.com/andrewbanchich/shreddit/compare/v1.0.2...v1.1.0) - 2025-03-09
+### 🐛 Bug Fixes
 
-### Added
+- Reddit link
+- Make --after filter optional
+- Make --before filter optional
 
-- support relative timestamps in --after filters
+### ⚙️ Miscellaneous Tasks
 
-### Other
+- Update checks workflow
+- Use bash for windows release
+- Allow workflow_dispatch trigger for release
+- Release v1.0.1 (#157)
+- Release v1.0.2 (#158)
+## [1.0.0] - 2025-03-08
 
-- update doc comment for relative timestamps
-- rename variable
+### 🚀 Features
 
-## [1.0.2](https://github.com/andrewbanchich/shreddit/compare/v1.0.1...v1.0.2) - 2025-03-09
+- Add `--after` flag (#90)
 
-### Fixed
+### 🐛 Bug Fixes
 
-- make --before filter optional
-- make --after filter optional
-- reddit link
+- Lint
 
-### Other
+### ⚙️ Miscellaneous Tasks
 
-- Revert "ci: allow workflow_dispatch trigger for release"
+- Fix
+- Release 1.0 (#156)
+## [0.9.12] - 2025-03-08
 
-## [1.0.1](https://github.com/andrewbanchich/shreddit/compare/v1.0.0...v1.0.1) - 2025-03-09
+### 🚀 Features
 
-### Other
+- Add `only-subreddits` option (#144)
+- Support relative datetime notation for --before flag (#141)
 
-- allow workflow_dispatch trigger for release
-- use bash for windows release
-- update checks workflow
+### 🐛 Bug Fixes
+
+- Lint
+
+### ⚙️ Miscellaneous Tasks
+
+- Dependabot
+- Lint PR titles
+- Lints
+- Test
+- Bump serde_json from 1.0.139 to 1.0.140 (#151)
+- Bump tokio from 1.43.0 to 1.44.0 (#150)
+- Bump async-trait from 0.1.86 to 0.1.87 (#149)
+- Bump actions/checkout from 2 to 4 (#148)
+- Fmt
+- Add workflow dispatch
+- Release v0.10.0 (#154)
+## [0.9.11] - 2025-01-01
+
+### ⚙️ Miscellaneous Tasks
+
+- Release v0.9.11 (#121)
+## [0.9.10] - 2025-01-01
+
+### ⚙️ Miscellaneous Tasks
+
+- Release v0.9.10 (#120)
+## [0.9.9] - 2025-01-01
+
+### ⚙️ Miscellaneous Tasks
+
+- Release v0.9.9 (#119)
+## [0.9.8] - 2025-01-01
+
+### ⚙️ Miscellaneous Tasks
+
+- Release v0.9.8 (#118)
+## [0.9.7] - 2025-01-01
+
+### ⚙️ Miscellaneous Tasks
+
+- Release v0.9.7 (#117)
+## [0.9.6] - 2025-01-01
+
+### ⚙️ Miscellaneous Tasks
+
+- Update deps
+- Release v0.9.6 (#116)
+## [0.9.5] - 2025-01-01
+
+### ⚙️ Miscellaneous Tasks
+
+- Fix clippy warnings
+- Release v0.9.5 (#115)
+## [0.2.0] - 2023-01-30
