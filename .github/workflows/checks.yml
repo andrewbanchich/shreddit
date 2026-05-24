@@ -8,27 +8,14 @@ on:
 jobs:
   check:
     name: check
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - codeberg-tiny
+    runs-on: codeberg-medium
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: https://github.com/actions/checkout@v6
 
-      - uses: actions/cache@v5
-        id: cache
+      - uses: https://github.com/dtolnay/rust-toolchain@stable
         with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - run: rustup update
+          components: clippy, rustfmt
 
       - run: cargo fmt --check
 
